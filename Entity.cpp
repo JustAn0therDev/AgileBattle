@@ -17,21 +17,25 @@ Entity::Entity(
 	m_CurrentAnimation = NULL;
 }
 
+Vector2 Entity::GetPosition() {
+	return m_Position;
+}
+
 void Entity::ChangeCurrentAnimation(const char* animationName) {
 	if (animationName == "Death") {
 		m_CurrentAnimation = m_DeathAnimation;
 	}
 }
 
-void Entity::Update(std::vector<Entity*>& entities, Ui& ui) {
+const Animation* Entity::GetCurrentAnimation()
+{
+	return m_CurrentAnimation;
+}
+
+void Entity::Update(std::vector<Entity*>& entities) {
 	if (m_CurrentAnimation != NULL) {
 		m_CurrentAnimation->Update();
 	}
 
-	if (ui.IsCursorOn(m_Position, m_CurrentAnimation->GetAnimationRectangle())) {
-		std::cout << "CURSOR IS ON!!1\n";
-	}
-	else {
-		std::cout << "CURSOR IS OFF!\n";
-	}
+	Rectangle rec = m_CurrentAnimation->GetAnimationRectangle();
 }

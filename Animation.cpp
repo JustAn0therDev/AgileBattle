@@ -36,7 +36,7 @@ void Animation::Update() {
 	DrawTextureRec(m_TextureImage, m_FrameRectangle, m_Position, WHITE);
 }
 
-Rectangle Animation::GetAnimationRectangle()
+Rectangle Animation::GetAnimationRectangle() const
 {
 	return m_FrameRectangle;
 }

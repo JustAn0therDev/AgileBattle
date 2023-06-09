@@ -15,7 +15,7 @@ public:
 	Animation(Vector2 position, int frameSpeed, int frameCount, Texture2D textureImage);
 
 	void Update();
-	Rectangle GetAnimationRectangle();
+	Rectangle GetAnimationRectangle() const;
 
 	~Animation();
 };

@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <vector>
 #include "Entity.hpp"
+#include "Ui.hpp"
 
 constexpr int WIDTH = 1280;
 constexpr int HEIGHT = 720;
@@ -29,17 +30,24 @@ int main(void) {
 	entities.push_back(&golem);
 
 	while (!WindowShouldClose()) {
+
+		// TODO: this should be handled by an auxiliary class.
+		if (IsKeyPressed(KEY_F)) {
+			ToggleFullscreen();
+		}
+
 		BeginDrawing();
 
 		ClearBackground(WHITE);
 
 		for (int i = 0; i < entities.size(); i++) {
 			if (entities[i] != NULL) {
-				entities[i]->Update(entities, ui);
+				entities[i]->Update(entities);
+				ui.Update(entities[i]);
 			}
 		}
 
-		ui.Update();
+		ui.Draw();
 
 		EndDrawing();
 	}

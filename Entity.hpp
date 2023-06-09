@@ -2,7 +2,6 @@
 #include <vector>
 #include <raylib.h>
 #include "Animation.hpp"
-#include "Ui.hpp"
 
 class Entity {
 private:
@@ -23,6 +22,10 @@ public:
 		Animation* damageAnimation);
 
 	void ChangeCurrentAnimation(const char* animationName);
+
+	Vector2 GetPosition();
+
+	const Animation* GetCurrentAnimation();
 		
-	void Update(std::vector<Entity*>& entities, Ui& ui);
+	void Update(std::vector<Entity*>& entities);
 };
