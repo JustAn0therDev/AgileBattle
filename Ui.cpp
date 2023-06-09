@@ -31,27 +31,31 @@ void Ui::Update(Entity* entity)
 
 	// Drawing mouse cursor
 	DrawTriangle(
-		mouseCursorTrianglePoint, 
-		mouseCursorTrianglePoint2, 
-		mouseCursorTrianglePoint3, 
+		mouseCursorTrianglePoint,
+		mouseCursorTrianglePoint2,
+		mouseCursorTrianglePoint3,
 		BLACK);
 
 	if (entity != NULL) {
 		Vector2 entityPos = entity->GetPosition();
 		Rectangle rec = entity->GetCurrentAnimation()->GetAnimationRectangle();
 
-		if (IsCursorOn(entityPos, rec)) {
+		bool isCursorOn = IsCursorOn(entityPos, rec);
+
+		if (isCursorOn) {
 			m_HoveringEntity = entity;
 		}
-		else if (!IsCursorOn(entityPos, rec)) {
+		else if (!isCursorOn && entity == m_HoveringEntity) {
 			m_HoveringEntity = NULL;
 		}
 
-		if (IsCursorOn(entityPos, rec) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			m_SelectedEntity = entity;
-		}
-		else if (!IsCursorOn(entityPos, rec) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			m_SelectedEntity = NULL;
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			if (isCursorOn) {
+				m_SelectedEntity = entity;
+			}
+			else if (!isCursorOn && entity == m_SelectedEntity) {
+				m_SelectedEntity = NULL;
+			}
 		}
 	}
 }

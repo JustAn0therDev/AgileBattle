@@ -24,6 +24,8 @@ Vector2 Entity::GetPosition() {
 void Entity::ChangeCurrentAnimation(const char* animationName) {
 	if (animationName == "Death") {
 		m_CurrentAnimation = m_DeathAnimation;
+	} else if (animationName == "Idle") {
+		m_CurrentAnimation = m_IdleAnimation;
 	}
 }
 
@@ -36,6 +38,4 @@ void Entity::Update(std::vector<Entity*>& entities) {
 	if (m_CurrentAnimation != NULL) {
 		m_CurrentAnimation->Update();
 	}
-
-	Rectangle rec = m_CurrentAnimation->GetAnimationRectangle();
 }
