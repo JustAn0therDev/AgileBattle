@@ -20,11 +20,15 @@ int main(void) {
 	std::vector<Entity*> entities;
 
 	Texture2D deathAnimationTextureImage = LoadTexture("Assets/GolemDefeated.png");
-	Vector2 pos = { static_cast<float>((WIDTH / 2) - ((deathAnimationTextureImage.width / 4) / 2)), static_cast<float>((HEIGHT / 2) - deathAnimationTextureImage.height / 2) };
+	
+	Vector2 entityPos = { 
+		static_cast<float>((WIDTH / 2) - ((deathAnimationTextureImage.width / 4) / 2)), 
+		static_cast<float>((HEIGHT / 2) - deathAnimationTextureImage.height / 2) 
+	};
 
-	Animation deathAnimation(pos, 4, 4, deathAnimationTextureImage);
+	Animation deathAnimation(entityPos, 4, 4, deathAnimationTextureImage);
 
-	Entity golem(10.0f, pos, NULL, &deathAnimation, NULL, NULL);
+	Entity golem(10.0f, entityPos, NULL, &deathAnimation, NULL, NULL);
 	golem.ChangeCurrentAnimation("Death");
 
 	entities.push_back(&golem);
