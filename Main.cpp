@@ -14,6 +14,8 @@ int main(void) {
 
 	SetTargetFPS(60);
 
+	Ui ui;
+
 	std::vector<Entity*> entities;
 
 	Texture2D deathAnimationTextureImage = LoadTexture("Assets/GolemDefeated.png");
@@ -33,9 +35,11 @@ int main(void) {
 
 		for (int i = 0; i < entities.size(); i++) {
 			if (entities[i] != NULL) {
-				entities[i]->Update(entities);
+				entities[i]->Update(entities, ui);
 			}
 		}
+
+		ui.Update();
 
 		EndDrawing();
 	}

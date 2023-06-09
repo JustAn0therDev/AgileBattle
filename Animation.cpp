@@ -33,30 +33,12 @@ void Animation::Update() {
 
 	Rectangle rec = { 0.0f, 0.0f, m_TextureImage.width / m_FrameCount, m_TextureImage.height };
 
-	Vector2 mousePosition = GetMousePosition();
-
-	bool mouseInRect =
-		mousePosition.x >= m_Position.x &&
-		mousePosition.x <= (m_Position.x + rec.width) &&
-		mousePosition.y >= m_Position.y &&
-		mousePosition.y <= (m_Position.y + rec.height);
-
-	if (mouseInRect) {
-		DrawRectangle(m_Position.x, m_Position.y, rec.width, rec.height, BLUE);
-	}
-	else {
-		DrawRectangleLines(m_Position.x, m_Position.y, rec.width, rec.height, BLACK);
-	}
-
 	DrawTextureRec(m_TextureImage, m_FrameRectangle, m_Position, WHITE);
+}
 
-	// Creating the mouse cursor
-	Vector2 trianglePoint = { mousePosition.x - 10, mousePosition.y - 10 };
-	Vector2 trianglePoint2 = { mousePosition.x - 10, mousePosition.y + 10 };
-	Vector2 trianglePoint3 = { mousePosition.x + 6, mousePosition.y + 5 };
-
-	// Drawing mouse cursor
-	DrawTriangle(trianglePoint, trianglePoint2, trianglePoint3, BLACK);
+Rectangle Animation::GetAnimationRectangle()
+{
+	return m_FrameRectangle;
 }
 
 Animation::~Animation() {
