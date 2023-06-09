@@ -17,15 +17,43 @@ Entity::Entity(
 	m_CurrentAnimation = NULL;
 }
 
+Entity::~Entity() {
+	if (m_IdleAnimation != NULL) {
+		delete m_IdleAnimation;
+	}
+
+	if (m_DeathAnimation != NULL) {
+		delete m_DeathAnimation;
+	}
+
+	if (m_AttackAnimation != NULL) {
+		delete m_AttackAnimation;
+	}
+
+	if (m_DamageAnimation != NULL) {
+		delete m_DamageAnimation;
+	}
+}
+
 Vector2 Entity::GetPosition() {
 	return m_Position;
 }
 
-void Entity::ChangeCurrentAnimation(const char* animationName) {
-	if (animationName == "Death") {
-		m_CurrentAnimation = m_DeathAnimation;
-	} else if (animationName == "Idle") {
+void Entity::ChangeCurrentAnimation(AnimationType animationType) {
+	switch (animationType)
+	{
+	case Idle:
 		m_CurrentAnimation = m_IdleAnimation;
+		break;
+	case Attack:
+		break;
+	case Damage:
+		break;
+	case Death:
+		m_CurrentAnimation = m_DeathAnimation;
+		break;
+	default:
+		break;
 	}
 }
 

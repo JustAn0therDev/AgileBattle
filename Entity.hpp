@@ -2,6 +2,7 @@
 #include <vector>
 #include <raylib.h>
 #include "Animation.hpp"
+#include "AnimationType.hpp"
 
 class Entity {
 private:
@@ -21,7 +22,9 @@ public:
 		Animation* attackAnimation,
 		Animation* damageAnimation);
 
-	void ChangeCurrentAnimation(const char* animationName);
+	~Entity();
+
+	void ChangeCurrentAnimation(AnimationType animationType);
 
 	Vector2 GetPosition();
 
