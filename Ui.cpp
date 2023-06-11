@@ -3,8 +3,13 @@
 
 Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 {
+	m_Font = LoadFont("Assets\\Fonts\\Cloude_Regular_Bold_1.03.otf");
 	m_SelectedEntity = NULL;
 	m_HoveringEntity = NULL;
+}
+
+const Font& Ui::GetFont() {
+	return m_Font;
 }
 
 bool Ui::IsCursorOn(Vector2 pos, Rectangle entityAreaRec)
@@ -62,6 +67,8 @@ void Ui::Update(Entity* entity)
 
 void Ui::Draw() {
 	if (m_SelectedEntity != NULL) {
+		Color color = m_SelectedEntity->GetEntityType() == EntityType::Enemy ? RED : GREEN;
+
 		Vector2 entityPos = m_SelectedEntity->GetPosition();
 		Rectangle rec = m_SelectedEntity->GetCurrentAnimation()->GetAnimationRectangle();
 
@@ -69,7 +76,7 @@ void Ui::Draw() {
 		Vector2 trianglePoint2 = { entityPos.x + (rec.width / 2) - 15, entityPos.y - 25 };
 		Vector2 trianglePoint3 = { entityPos.x + (rec.width / 2), entityPos.y - 10 };
 
-		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, RED);
+		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, color);
 	}
 
 	if (m_HoveringEntity != NULL && m_SelectedEntity != m_HoveringEntity) {

@@ -138,7 +138,9 @@
     <ClCompile Include="AnimationType.hpp" />
     <ClCompile Include="BattleScene.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityType.hpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Ui.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +149,7 @@
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="TitleScene.hpp" />
     <ClInclude Include="Ui.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

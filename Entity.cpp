@@ -2,12 +2,16 @@
 #include <iostream>
 
 Entity::Entity(
+	const char* name,
+	EntityType entityType,
 	float healthPoints,
 	Vector2 position,
 	Animation* idleAnimation,
 	Animation* deathAnimation,
 	Animation* attackAnimation,
 	Animation* damageAnimation) {
+	m_Name = name;
+	m_EntityType = entityType;
 	m_HealthPoints = healthPoints;
 	m_Position = position;
 	m_IdleAnimation = idleAnimation;
@@ -55,6 +59,10 @@ void Entity::ChangeCurrentAnimation(AnimationType animationType) {
 	default:
 		break;
 	}
+}
+
+const EntityType& Entity::GetEntityType() {
+	return m_EntityType;
 }
 
 const Animation* Entity::GetCurrentAnimation()

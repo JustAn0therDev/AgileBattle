@@ -4,22 +4,26 @@
 #include "Entity.hpp"
 #include "Ui.hpp"
 #include "BattleScene.hpp"
-
-constexpr int WIDTH = 1280;
-constexpr int HEIGHT = 720;
-constexpr int MAX_ENTITIES = 10;
+#include "Constants.hpp"
+#include "TitleScene.hpp"
+#include <clocale>
 
 int main(void) {
-	InitWindow(WIDTH, HEIGHT, "Agile Battle");
+	setlocale(LC_ALL, "pt-BR.UTF-8");
+
+	InitWindow(Constants::DEFAULT_WIDTH, Constants::DEFAULT_HEIGHT, "Agile Battle");
 
 	HideCursor();
 
 	SetTargetFPS(60);
 
-	BattleScene battleScene;
+	bool triggredBattleScene = false;
+
+	TitleScene* titleScene = new TitleScene();
+
+	BattleScene* battleScene = NULL;
 
 	while (!WindowShouldClose()) {
-
 		// TODO: this should be handled by an auxiliary class.
 		if (IsKeyPressed(KEY_F)) {
 			ToggleFullscreen();
@@ -29,9 +33,26 @@ int main(void) {
 
 		ClearBackground(WHITE);
 
-		battleScene.Update();
+		if (IsKeyPressed(KEY_ENTER) && !triggredBattleScene) {
+			battleScene = new BattleScene();
+			triggredBattleScene = true;
+			delete titleScene;
+			titleScene = NULL;
+		}
+
+		if (titleScene != NULL) {
+			titleScene->Update();
+		}
+		else if (battleScene != NULL) {
+			battleScene->Update();
+		}
+
 
 		EndDrawing();
+	}
+
+	if (battleScene != NULL) {
+		delete battleScene;
 	}
 
 	CloseWindow();

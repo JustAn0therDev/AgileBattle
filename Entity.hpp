@@ -3,9 +3,12 @@
 #include <raylib.h>
 #include "Animation.hpp"
 #include "AnimationType.hpp"
+#include "EntityType.hpp"
 
 class Entity {
 private:
+	const char* m_Name;
+	EntityType m_EntityType;
 	float m_HealthPoints;
 	Animation* m_IdleAnimation;
 	Animation* m_DeathAnimation;
@@ -15,6 +18,8 @@ private:
 	Animation* m_CurrentAnimation;
 public:
 	Entity(
+		const char* name,
+		EntityType entityType,
 		float healthPoints,
 		Vector2 position, 
 		Animation* idleAnimation, 
@@ -25,6 +30,8 @@ public:
 	~Entity();
 
 	void ChangeCurrentAnimation(AnimationType animationType);
+
+	const EntityType& GetEntityType();
 
 	Vector2 GetPosition();
 
