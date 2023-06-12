@@ -8,6 +8,11 @@ private:
 	Entity* m_SelectedEntity;
 	Entity* m_HoveringEntity;
 	Font m_Font;
+	float m_UpperTextBoxHeightLimit;
+	float m_LowerTextBoxHeightLimit;
+	float m_TextBoxWidthLimit;
+	float m_DefaultFontSize;
+	float m_DefaultFontSpacing;
 public:
 	Ui();
 	const Font& GetFont();

@@ -33,6 +33,8 @@ public:
 
 	const EntityType& GetEntityType();
 
+	const char* GetName();
+
 	Vector2 GetPosition();
 
 	const Animation* GetCurrentAnimation();

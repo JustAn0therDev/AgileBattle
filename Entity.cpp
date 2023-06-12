@@ -39,6 +39,10 @@ Entity::~Entity() {
 	}
 }
 
+const char* Entity::GetName() {
+	return m_Name;
+}
+
 Vector2 Entity::GetPosition() {
 	return m_Position;
 }

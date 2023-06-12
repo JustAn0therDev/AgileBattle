@@ -31,7 +31,11 @@ void Animation::Update() {
 		m_FrameRectangle.x = static_cast<float>(m_CurrentFrame) * static_cast<float>(m_TextureImage.width / m_FrameCount);
 	}
 
-	Rectangle rec = { 0.0f, 0.0f, m_TextureImage.width / m_FrameCount, m_TextureImage.height };
+	Rectangle rec = { 
+		0.0f, 
+		0.0f, 
+		static_cast<float>(m_TextureImage.width / m_FrameCount), 
+		static_cast<float>(m_TextureImage.height) };
 
 	DrawTextureRec(m_TextureImage, m_FrameRectangle, m_Position, WHITE);
 }

@@ -1,6 +1,6 @@
 class Constants {
 public:
-	const static unsigned DEFAULT_WIDTH = 1280;
-	const static unsigned DEFAULT_HEIGHT = 720;
-	const static short MAX_ENTITIES = 8;
+	constexpr static unsigned DEFAULT_WIDTH = 1283;
+	constexpr static unsigned DEFAULT_HEIGHT = 834;
+	constexpr static short MAX_ENTITIES = 8;
 };

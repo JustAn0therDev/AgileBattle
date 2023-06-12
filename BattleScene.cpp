@@ -1,4 +1,4 @@
-#include "BattleScene.hpp"
+﻿#include "BattleScene.hpp"
 #include "Constants.hpp"
 #include <math.h>
 
@@ -6,7 +6,7 @@ BattleScene::BattleScene() {
 	m_Entities.reserve(Constants::MAX_ENTITIES);
 
 	m_BackgroundTexture =
-		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Backgrounds\\desert.png");
+		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Backgrounds\\battle.png");
 
 	Texture2D deathAnimationTextureImage =
 		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Golem\\GolemDefeated.png");
@@ -19,7 +19,7 @@ BattleScene::BattleScene() {
 	Animation* deathAnimation = new Animation(entityPos, 5, 4, deathAnimationTextureImage);
 
 	Entity* golem = new Entity(
-		"Tarefa #3",
+		"Tarefa #1",
 		EntityType::Enemy,
 		10.0f,
 		entityPos,
@@ -58,10 +58,10 @@ BattleScene::BattleScene() {
 
 void BattleScene::Update() {
 	DrawTextureEx(m_BackgroundTexture,
-		{ static_cast<float>((Constants::DEFAULT_WIDTH / 2) - ((m_BackgroundTexture.width / 1.5f))),
-		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - m_BackgroundTexture.height / 1.5f) },
+		{ static_cast<float>((Constants::DEFAULT_WIDTH / 2) - (m_BackgroundTexture.width / 2)),
+		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - (m_BackgroundTexture.height / 2)) },
 		0.0f,
-		1.5f,
+		1.0f,
 		WHITE);
 	
 	for (size_t i = 0; i < m_Entities.size(); i++) {
