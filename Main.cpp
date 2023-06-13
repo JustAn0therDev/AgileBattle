@@ -9,8 +9,6 @@
 #include <clocale>
 
 int main(void) {
-	setlocale(LC_ALL, "pt-BR.UTF-8");
-
 	InitWindow(Constants::DEFAULT_WIDTH, Constants::DEFAULT_HEIGHT, "Agile Battle");
 
 	HideCursor();

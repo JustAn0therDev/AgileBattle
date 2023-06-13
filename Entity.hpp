@@ -29,15 +29,17 @@ public:
 
 	~Entity();
 
+	float GetHealthPoints() const;
+
 	void ChangeCurrentAnimation(AnimationType animationType);
 
-	const EntityType& GetEntityType();
+	const EntityType& GetEntityType() const;
 
-	const char* GetName();
+	const char* GetName() const;
 
-	Vector2 GetPosition();
+	Vector2 GetPosition() const;
 
-	const Animation* GetCurrentAnimation();
+	const Animation* GetCurrentAnimation() const;
 		
 	void Update(std::vector<Entity*>& entities);
 };

@@ -13,6 +13,10 @@ private:
 	float m_TextBoxWidthLimit;
 	float m_DefaultFontSize;
 	float m_DefaultFontSpacing;
+	Texture2D m_HealthBarTexture2D;
+	Texture2D m_EmptyHealthBarTexture2D;
+
+	Rectangle GetHealthBarRectangleByEntityHealth(float entityHealth) const;
 public:
 	Ui();
 	const Font& GetFont();
@@ -20,4 +24,5 @@ public:
 	Vector2 GetCursorPosition();
 	void Update(Entity* entity);
 	void Draw();
+	void DrawHpBar(Entity* entity, Rectangle entityRectangle, Vector2 entityInfoPos) const;
 };

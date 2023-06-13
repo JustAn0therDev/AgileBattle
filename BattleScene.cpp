@@ -1,6 +1,6 @@
-﻿#include "BattleScene.hpp"
-#include "Constants.hpp"
+﻿#include "Constants.hpp"
 #include <math.h>
+#include "BattleScene.hpp"
 
 BattleScene::BattleScene() {
 	m_Entities.reserve(Constants::MAX_ENTITIES);
@@ -21,7 +21,7 @@ BattleScene::BattleScene() {
 	Entity* golem = new Entity(
 		"Tarefa #1",
 		EntityType::Enemy,
-		10.0f,
+		100.0f,
 		entityPos,
 		NULL,
 		deathAnimation,
@@ -43,7 +43,7 @@ BattleScene::BattleScene() {
 	Entity* dino = new Entity(
 		"Front-end",
 		EntityType::TeamMember,
-		10.0f,
+		100.0f,
 		entityPosDino,
 		dinoAnimation,
 		NULL,

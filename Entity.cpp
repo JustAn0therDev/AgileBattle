@@ -39,11 +39,15 @@ Entity::~Entity() {
 	}
 }
 
-const char* Entity::GetName() {
+float Entity::GetHealthPoints() const {
+	return m_HealthPoints;
+}
+
+const char* Entity::GetName() const {
 	return m_Name;
 }
 
-Vector2 Entity::GetPosition() {
+Vector2 Entity::GetPosition() const {
 	return m_Position;
 }
 
@@ -65,17 +69,24 @@ void Entity::ChangeCurrentAnimation(AnimationType animationType) {
 	}
 }
 
-const EntityType& Entity::GetEntityType() {
+const EntityType& Entity::GetEntityType() const {
 	return m_EntityType;
 }
 
-const Animation* Entity::GetCurrentAnimation()
-{
+const Animation* Entity::GetCurrentAnimation() const {
 	return m_CurrentAnimation;
 }
 
 void Entity::Update(std::vector<Entity*>& entities) {
 	if (m_CurrentAnimation != NULL) {
 		m_CurrentAnimation->Update();
+	}
+
+	// TODO: TEMPORARY
+	if (IsKeyPressed(KEY_DOWN)) {
+		m_HealthPoints -= 8;
+	}
+	else if (IsKeyPressed(KEY_UP)) {
+		m_HealthPoints += 8;
 	}
 }
