@@ -24,5 +24,8 @@ public:
 	Vector2 GetCursorPosition();
 	void Update(Entity* entity);
 	void Draw();
-	void DrawHpBar(Entity* entity, Rectangle entityRectangle, Vector2 entityInfoPos) const;
+	void DrawHpBar(
+		Entity* entity,
+		Rectangle entityRectangle,
+		Vector2 entityInfoPos) const;
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <raylib.h>
+#include "AnimationType.hpp"
 
 class Animation {
 private:
@@ -7,15 +8,26 @@ private:
 	int m_FrameCount;
 	int m_CurrentFrame;
 	int m_FrameCounter;
+	bool m_PlayedAnimationOnce;
 	Rectangle m_FrameRectangle;
 	Texture2D m_TextureImage;
 	Vector2 m_Position;
+	AnimationType m_AnimationType;
 public:
 	Animation() = default;
-	Animation(Vector2 position, int frameSpeed, int frameCount, Texture2D textureImage);
+	Animation(
+		Vector2 position, 
+		int frameSpeed, 
+		int frameCount, 
+		Texture2D textureImage,
+		AnimationType animationType);
 
 	void Update();
 	Rectangle GetAnimationRectangle() const;
+
+	bool PlayedAnimationOnce() const;
+	void SetPlayedAnimationOnce(bool value);
+	AnimationType GetAnimationType() const;
 
 	~Animation();
 };

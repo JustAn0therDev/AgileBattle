@@ -31,9 +31,9 @@ public:
 
 	float GetHealthPoints() const;
 
-	void ChangeCurrentAnimation(AnimationType animationType);
-
 	const EntityType& GetEntityType() const;
+
+	void PlayAnimation(AnimationType animationType);
 
 	const char* GetName() const;
 

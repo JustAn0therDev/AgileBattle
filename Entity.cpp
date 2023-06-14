@@ -1,5 +1,6 @@
 #include "Entity.hpp"
 #include <iostream>
+#include <raymath.h>
 
 Entity::Entity(
 	const char* name,
@@ -18,7 +19,10 @@ Entity::Entity(
 	m_DeathAnimation = deathAnimation;
 	m_AttackAnimation = attackAnimation;
 	m_DamageAnimation = damageAnimation;
-	m_CurrentAnimation = NULL;
+
+	// The current animation is always "idle", unless another
+	// system actively changes it.
+	m_CurrentAnimation = m_IdleAnimation; 
 }
 
 Entity::~Entity() {
@@ -51,26 +55,30 @@ Vector2 Entity::GetPosition() const {
 	return m_Position;
 }
 
-void Entity::ChangeCurrentAnimation(AnimationType animationType) {
+const EntityType& Entity::GetEntityType() const {
+	return m_EntityType;
+}
+
+void Entity::PlayAnimation(AnimationType animationType) {
 	switch (animationType)
 	{
 	case Idle:
 		m_CurrentAnimation = m_IdleAnimation;
 		break;
 	case Attack:
+		m_CurrentAnimation = m_AttackAnimation;
 		break;
 	case Damage:
+		m_CurrentAnimation = m_DamageAnimation;
 		break;
 	case Death:
 		m_CurrentAnimation = m_DeathAnimation;
 		break;
-	default:
-		break;
 	}
-}
 
-const EntityType& Entity::GetEntityType() const {
-	return m_EntityType;
+	// This is not checked in the idle animation set.
+	// Outside of it, any animation is only played once.
+	m_CurrentAnimation->SetPlayedAnimationOnce(false);
 }
 
 const Animation* Entity::GetCurrentAnimation() const {
@@ -78,15 +86,22 @@ const Animation* Entity::GetCurrentAnimation() const {
 }
 
 void Entity::Update(std::vector<Entity*>& entities) {
-	if (m_CurrentAnimation != NULL) {
-		m_CurrentAnimation->Update();
+	// TODO: The animation will also be handled by the 
+	// battle system, when a character attacks, takes damage or 
+	// perishes in battle.
+	if (IsKeyPressed(KEY_A)) {
+		PlayAnimation(AnimationType::Death);
 	}
 
-	// TODO: TEMPORARY
-	if (IsKeyPressed(KEY_DOWN)) {
-		m_HealthPoints -= 8;
+	if (m_CurrentAnimation != NULL) {
+		m_CurrentAnimation->Update();
+
+		if (m_CurrentAnimation->GetAnimationType() != AnimationType::Idle &&
+			m_CurrentAnimation->PlayedAnimationOnce()) {
+			PlayAnimation(AnimationType::Idle);
+		}
 	}
-	else if (IsKeyPressed(KEY_UP)) {
-		m_HealthPoints += 8;
-	}
+
+    // TODO: This should be set in the BattleSystem.cpp
+    // m_HealthPoints = Lerp(m_HealthPoints, m_LowTargetHealthPoints, 0.1f);
 }

@@ -7,8 +7,8 @@ Rectangle Ui::GetHealthBarRectangleByEntityHealth(float entityHealth) const {
 	Rectangle healthBarRectangle = { 
 		0.0f,
 		0.0f,
-		Clamp(entityHealth, 0, 98),
-		m_HealthBarTexture2D.height / 4
+		static_cast<float>(Clamp(entityHealth, 0, 98)),
+		static_cast<float>(m_HealthBarTexture2D.height / 4)
 	};
 
 	return healthBarRectangle;
@@ -104,17 +104,11 @@ void Ui::Draw() {
 			m_DefaultFontSpacing,
 			WHITE);
 
-		// Draw the entity's health bar.
-		// Both bars have to be drawn at the same position;
-		// The empty bar should always be BEHIND (drawn first)
-		// As health gets lower, the original health bar should have
-		// only parts of it being drawn.
-		// TODO: this position might have to be adjusted.
 		Rectangle emptyBarRectangle = { 
 			0.0f,
 			0.0f,
-			m_EmptyHealthBarTexture2D.width,
-			m_EmptyHealthBarTexture2D.height / 4
+			static_cast<float>(m_EmptyHealthBarTexture2D.width),
+			static_cast<float>(m_EmptyHealthBarTexture2D.height / 4.0f)
 		};
 
 		entityInfoPos.x =
@@ -166,7 +160,6 @@ void Ui::Draw() {
 	Rectangle rec = { 0.0f, 0.0f, actionTextSize.x, actionTextSize.y };
 
 	if (IsCursorOn(actionTextPos, rec)) {
-		DrawRectangleLines((int)actionTextPos.x, (int)actionTextPos.y, (int)rec.width, (int)rec.height, WHITE);
 		DrawTextEx(m_Font, arrow.append(actionText).c_str(), actionTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
 	}
 	else {
@@ -198,8 +191,8 @@ void Ui::DrawHpBar(Entity* entity, Rectangle entityRectangle, Vector2 position) 
 	Rectangle emptyBarRectangle = {
 		0.0f,
 		0.0f,
-		m_EmptyHealthBarTexture2D.width,
-		m_EmptyHealthBarTexture2D.height / 4
+		static_cast<float>(m_EmptyHealthBarTexture2D.width),
+		static_cast<float>(m_EmptyHealthBarTexture2D.height / 4)
 	};
 
 	Rectangle healthBarRectangle = GetHealthBarRectangleByEntityHealth(entity->GetHealthPoints());

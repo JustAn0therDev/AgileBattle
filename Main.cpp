@@ -45,7 +45,6 @@ int main(void) {
 			battleScene->Update();
 		}
 
-
 		EndDrawing();
 	}
 

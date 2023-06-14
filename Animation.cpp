@@ -1,6 +1,11 @@
 #include "Animation.hpp"
 
-Animation::Animation(Vector2 position, int frameSpeed, int frameCount, Texture2D textureImage) {
+Animation::Animation(
+	Vector2 position,
+	int frameSpeed,
+	int frameCount,
+	Texture2D textureImage,
+	AnimationType animationType) {
 	m_FrameSpeed = frameSpeed;
 	m_FrameCount = frameCount;
 	m_CurrentFrame = 1;
@@ -13,6 +18,8 @@ Animation::Animation(Vector2 position, int frameSpeed, int frameCount, Texture2D
 		static_cast<float>(textureImage.height)
 	};
 	m_Position = position;
+	m_PlayedAnimationOnce = false;
+	m_AnimationType = animationType;
 }
 
 void Animation::Update() {
@@ -22,6 +29,10 @@ void Animation::Update() {
 		m_FrameCounter = 0;
 
 		if (m_CurrentFrame > m_FrameCount) {
+			if (m_AnimationType != AnimationType::Idle) {
+				m_PlayedAnimationOnce = true;
+			}
+
 			m_CurrentFrame = 1;
 		}
 		else {
@@ -31,10 +42,10 @@ void Animation::Update() {
 		m_FrameRectangle.x = static_cast<float>(m_CurrentFrame) * static_cast<float>(m_TextureImage.width / m_FrameCount);
 	}
 
-	Rectangle rec = { 
-		0.0f, 
-		0.0f, 
-		static_cast<float>(m_TextureImage.width / m_FrameCount), 
+	Rectangle rec = {
+		0.0f,
+		0.0f,
+		static_cast<float>(m_TextureImage.width / m_FrameCount),
 		static_cast<float>(m_TextureImage.height) };
 
 	DrawTextureRec(m_TextureImage, m_FrameRectangle, m_Position, WHITE);
@@ -43,6 +54,18 @@ void Animation::Update() {
 Rectangle Animation::GetAnimationRectangle() const
 {
 	return m_FrameRectangle;
+}
+
+bool Animation::PlayedAnimationOnce() const {
+	return m_PlayedAnimationOnce;
+}
+
+void Animation::SetPlayedAnimationOnce(bool value) {
+	m_PlayedAnimationOnce = value;
+}
+
+AnimationType Animation::GetAnimationType() const {
+	return m_AnimationType;
 }
 
 Animation::~Animation() {
