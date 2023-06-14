@@ -14,6 +14,36 @@ Rectangle Ui::GetHealthBarRectangleByEntityHealth(float entityHealth) const {
 	return healthBarRectangle;
 }
 
+void Ui::DrawContextMenu()
+{
+	// this should constexpr in the definition of the class
+	std::string arrowBuffer = "->";
+
+	Vector2 moveTextPos = { m_TextBoxWidthLimit, m_UpperTextBoxHeightLimit };
+	Vector2 moveTextSize = MeasureTextEx(m_Font, m_MoveText.c_str(), m_DefaultFontSize, m_DefaultFontSpacing);
+
+	Rectangle moveRec = { 0.0f, 0.0f, moveTextSize.x, moveTextSize.y };
+
+	Vector2 passTextPos = { m_TextBoxWidthLimit, m_UpperTextBoxHeightLimit + 80 };
+	Vector2 passTextSize = MeasureTextEx(m_Font, m_PassText.c_str(), m_DefaultFontSize, m_DefaultFontSpacing);
+
+	Rectangle passRec = { 0.0f, 0.0f, passTextSize.x, passTextSize.y };
+
+	if (IsCursorOn(moveTextPos, moveRec)) {
+		DrawTextEx(m_Font, arrowBuffer.append(m_MoveText).c_str(), moveTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+	}
+	else {
+		DrawTextEx(m_Font, m_MoveText.c_str(), moveTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+	}
+
+	if (IsCursorOn(passTextPos, moveRec)) {
+		DrawTextEx(m_Font, arrowBuffer.append(m_PassText).c_str(), passTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+	}
+	else {
+		DrawTextEx(m_Font, m_PassText.c_str(), passTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+	}
+}
+
 Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 {
 	m_Font = LoadFontEx("Assets\\Fonts\\Cloude_Regular_Bold_1.03.otf", 72, 0, 256);
@@ -151,28 +181,8 @@ void Ui::Draw() {
 		DrawHpBar(m_HoveringEntity, rec, entityInfoPos);
 	}
 
-	std::string actionText = "Atacar";
-	std::string arrow = "->";
-
 	// TODO: all this code down here is just a test
-	Vector2 actionTextPos = { m_TextBoxWidthLimit, m_UpperTextBoxHeightLimit };
-	Vector2 actionTextSize = MeasureTextEx(m_Font, "Atacar", m_DefaultFontSize, m_DefaultFontSpacing);
-	Rectangle rec = { 0.0f, 0.0f, actionTextSize.x, actionTextSize.y };
-
-	if (IsCursorOn(actionTextPos, rec)) {
-		DrawTextEx(m_Font, arrow.append(actionText).c_str(), actionTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
-	}
-	else {
-		DrawTextEx(m_Font, actionText.c_str(), actionTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
-	}
-
-	actionTextPos.y += 50;
-
-	DrawTextEx(m_Font, "Atacar", actionTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
-
-	actionTextPos.y += 50;
-
-	DrawTextEx(m_Font, "Atacar", actionTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+	DrawContextMenu();
 
 	// Creating the mouse cursor
 	Vector2 mouseCursorTrianglePoint = { m_CursorPosition.x, m_CursorPosition.y };

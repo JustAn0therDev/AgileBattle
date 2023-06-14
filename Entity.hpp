@@ -4,6 +4,7 @@
 #include "Animation.hpp"
 #include "AnimationType.hpp"
 #include "EntityType.hpp"
+#include "Move.hpp"
 
 class Entity {
 private:
@@ -16,6 +17,7 @@ private:
 	Animation* m_DamageAnimation;
 	Vector2 m_Position;
 	Animation* m_CurrentAnimation;
+	std::vector<Move*> m_Movements;
 public:
 	Entity(
 		const char* name,
@@ -42,4 +44,6 @@ public:
 	const Animation* GetCurrentAnimation() const;
 		
 	void Update(std::vector<Entity*>& entities);
+
+	void AddMove(Move* move);
 };

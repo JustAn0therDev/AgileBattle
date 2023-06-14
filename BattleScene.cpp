@@ -1,6 +1,7 @@
 ﻿#include "Constants.hpp"
 #include <math.h>
 #include "BattleScene.hpp"
+#include <iostream>
 
 BattleScene::BattleScene() {
 	m_Entities.reserve(Constants::MAX_ENTITIES);
@@ -25,7 +26,7 @@ BattleScene::BattleScene() {
 	Entity* golem = new Entity(
 		"Tarefa #1",
 		EntityType::Enemy,
-		100.0f,
+		130.0f,
 		entityPos,
 		idleAnimation,
 		deathAnimation,
@@ -83,3 +84,4 @@ BattleScene::~BattleScene() {
 
 	UnloadTexture(m_BackgroundTexture);
 }
+

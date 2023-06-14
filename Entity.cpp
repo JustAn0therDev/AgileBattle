@@ -1,6 +1,7 @@
 #include "Entity.hpp"
 #include <iostream>
 #include <raymath.h>
+#include "Constants.hpp"
 
 Entity::Entity(
 	const char* name,
@@ -19,6 +20,7 @@ Entity::Entity(
 	m_DeathAnimation = deathAnimation;
 	m_AttackAnimation = attackAnimation;
 	m_DamageAnimation = damageAnimation;
+	m_Movements.reserve(Constants::MAX_MOVEMENTS);
 
 	// The current animation is always "idle", unless another
 	// system actively changes it.
@@ -26,6 +28,7 @@ Entity::Entity(
 }
 
 Entity::~Entity() {
+	// Freeing all the animations
 	if (m_IdleAnimation != NULL) {
 		delete m_IdleAnimation;
 	}
@@ -40,6 +43,11 @@ Entity::~Entity() {
 
 	if (m_DamageAnimation != NULL) {
 		delete m_DamageAnimation;
+	}
+
+	// Freeing the movements
+	for (const Move* move : m_Movements) {
+		delete move;
 	}
 }
 
@@ -104,4 +112,8 @@ void Entity::Update(std::vector<Entity*>& entities) {
 
     // TODO: This should be set in the BattleSystem.cpp
     // m_HealthPoints = Lerp(m_HealthPoints, m_LowTargetHealthPoints, 0.1f);
+}
+
+void Entity::AddMove(Move* move) {
+	m_Movements.push_back(move);
 }

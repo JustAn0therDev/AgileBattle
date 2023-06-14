@@ -134,20 +134,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationType.hpp" />
     <ClCompile Include="BattleScene.cpp" />
+    <ClCompile Include="BattleSystem.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityType.hpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Move.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action.hpp" />
     <ClInclude Include="Animation.hpp" />
     <ClInclude Include="BattleScene.hpp" />
+    <ClInclude Include="BattleState.hpp" />
+    <ClInclude Include="BattleSystem.hpp" />
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="Move.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="TitleScene.hpp" />
     <ClInclude Include="Ui.hpp" />
