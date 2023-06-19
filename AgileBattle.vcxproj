@@ -154,6 +154,7 @@
     <ClInclude Include="BattleSystem.hpp" />
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="ActiveMenuState.hpp" />
     <ClInclude Include="Move.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="TitleScene.hpp" />

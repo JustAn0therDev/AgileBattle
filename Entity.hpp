@@ -46,4 +46,6 @@ public:
 	void Update(std::vector<Entity*>& entities);
 
 	void AddMove(Move* move);
+
+	const std::vector<Move*>& GetMoves() const;
 };

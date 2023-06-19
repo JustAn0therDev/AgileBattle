@@ -117,3 +117,7 @@ void Entity::Update(std::vector<Entity*>& entities) {
 void Entity::AddMove(Move* move) {
 	m_Movements.push_back(move);
 }
+
+const std::vector<Move*>& Entity::GetMoves() const {
+	return m_Movements;
+}

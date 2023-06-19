@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <vector>
 #include <string>
+#include "ActiveMenuState.hpp"
 
 class Ui {
 private:
@@ -20,8 +21,13 @@ private:
 	float m_DefaultFontSpacing;
 	Texture2D m_HealthBarTexture2D;
 	Texture2D m_EmptyHealthBarTexture2D;
-
-	Rectangle GetHealthBarRectangleByEntityHealth(float entityHealth) const;
+	Vector2 m_MoveTextPos;
+	Vector2 m_PassTextPos;
+	Vector2 m_MoveTextSize;
+	Vector2 m_PassTextSize;
+	Rectangle m_MoveRec;
+	Rectangle m_PassRec;
+	ActiveMenuState m_ActiveMenu;
 
 	void DrawContextMenu();
 public:

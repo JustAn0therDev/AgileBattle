@@ -32,6 +32,13 @@ BattleScene::BattleScene() {
 		deathAnimation,
 		NULL,
 		NULL);
+
+	Move* move = new Move(10.0f, 10.0f, "RESOLVER TAREFA", "Resolve tarefa planejada para a sprint.");
+
+	Move* move2 = new Move(10.0f, 10.0f, "RECUSAR TAREFA", "Recusa a tarefa.");
+
+	golem->AddMove(move);
+	golem->AddMove(move2);
 	
 	//Texture2D textureDino
 	//	= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\DinoSprites - doux.png");
