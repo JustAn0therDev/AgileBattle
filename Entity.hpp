@@ -53,4 +53,10 @@ public:
 	const bool HasAttackedThisTurn() const;
 
 	void SetAttackedThisTurn(bool value);
+
+	void RemoveHealth(float damage);
+
+	void AddHealth(float healing);
+
+	void SetHealth(float healthPoints);
 };

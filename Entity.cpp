@@ -25,7 +25,7 @@ Entity::Entity(
 
 	// The current animation is always "idle", unless another
 	// system actively changes it.
-	m_CurrentAnimation = m_IdleAnimation; 
+	m_CurrentAnimation = m_IdleAnimation;
 }
 
 Entity::~Entity() {
@@ -113,9 +113,6 @@ void Entity::Update(std::vector<Entity*>& entities) {
 			PlayAnimation(AnimationType::Idle);
 		}
 	}
-
-    // TODO: This should be set in the BattleSystem.cpp
-    // m_HealthPoints = Lerp(m_HealthPoints, m_LowTargetHealthPoints, 0.1f);
 }
 
 void Entity::AddMove(Move* move) {
@@ -134,4 +131,18 @@ const bool Entity::HasAttackedThisTurn() const
 void Entity::SetAttackedThisTurn(bool value)
 {
 	m_AttackedThisTurn = value;
+}
+
+void Entity::RemoveHealth(float damage)
+{
+	m_HealthPoints -= damage;
+}
+
+void Entity::AddHealth(float healing) {
+	m_HealthPoints += Clamp(m_HealthPoints + healing, 0, 98);
+}
+
+void Entity::SetHealth(float healthPoints)
+{
+	m_HealthPoints = healthPoints;
 }

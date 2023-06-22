@@ -26,7 +26,7 @@ BattleScene::BattleScene() {
 	Entity* golem = new Entity(
 		"Tarefa #1",
 		EntityType::Enemy,
-		130.0f,
+		100.0f,
 		entityPos,
 		idleAnimation,
 		deathAnimation,
@@ -63,6 +63,8 @@ BattleScene::BattleScene() {
 
 	m_Entities.emplace_back(dino);
 	m_Entities.emplace_back(golem);
+
+	m_BattleSystem = new BattleSystem(&m_Ui);
 }
 
 void BattleScene::Update() {
@@ -80,7 +82,8 @@ void BattleScene::Update() {
 		}
 	}
 
-	// m_Ui.Draw();
+	m_BattleSystem->Update();
+
 #ifdef _DEBUG
 	DrawFPS(0, 0);
 #endif
@@ -94,5 +97,6 @@ BattleScene::~BattleScene() {
 	}
 
 	UnloadTexture(m_BackgroundTexture);
+	delete m_BattleSystem;
 }
 

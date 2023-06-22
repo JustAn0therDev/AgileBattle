@@ -74,9 +74,6 @@
     <ClInclude Include="BattleSystem.hpp">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="BattleState.hpp">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
     <ClInclude Include="Move.hpp">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>

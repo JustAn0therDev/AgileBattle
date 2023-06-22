@@ -1,30 +1,34 @@
 #include "BattleSystem.hpp"
+#include <raymath.h>
 
-BattleSystem::BattleSystem(std::vector<Entity*> teamMembers, std::vector<Entity*> enemies, Ui* ui)
+BattleSystem::BattleSystem(Ui* ui)
 {
-	m_TeamMembers = teamMembers;
-	m_Enemies = enemies;
 	m_Ui = ui;
-
-	// The max actions we can have is one action per team member.
-	m_Actions.reserve(teamMembers.size());
-}
-
-BattleState BattleSystem::GetBattleState() const {
-	return m_BattleState;
+	m_LowerHealthLerp = static_cast<float>(INT_MAX);
+	m_ProcessingMove = false;
 }
 
 void BattleSystem::Update() {
-	switch (m_BattleState)
-	{
-	case SELECTING_ACTIONS:
+	Entity* target = m_Ui->GetSelectedTarget();
+	const Entity* attacking = m_Ui->GetSelectedEntity();
 
-		break;
-	case PLAYER_TURN:
-		break;
-	case ENEMY_TURN:
-		break;
-	default:
-		break;
+	if (m_ProcessingMove) {
+		if (target->GetHealthPoints() != m_LowerHealthLerp) {
+			target->SetHealth(floorf(Lerp(target->GetHealthPoints(), m_LowerHealthLerp, 0.1f)));
+		}
+		else {
+			m_Ui->RemoveSelectedEntity();
+			m_Ui->RemoveSelectedTarget();
+			m_Ui->RemoveSelectedMove();
+			m_Ui->ChangeUiState(ActiveUiState::IDLE);
+			m_ProcessingMove = false;
+			m_LowerHealthLerp = static_cast<float>(INT_MAX);
+		}
+	} else if (attacking != NULL && target != NULL && !m_ProcessingMove) {
+		const Move* move = m_Ui->GetSelectedMove();
+
+		m_LowerHealthLerp = target->GetHealthPoints() - move->GetDamage();
+
+		m_ProcessingMove = true;
 	}
 }

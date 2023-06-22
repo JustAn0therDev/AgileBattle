@@ -47,7 +47,17 @@ public:
 		Rectangle entityRectangle,
 		Vector2 entityInfoPos) const;
 
+	Entity* GetSelectedTarget() const;
+
+	const Entity* GetSelectedEntity() const;
+
 	const Move* GetSelectedMove() const;
 
 	void RemoveSelectedMove();
+
+	void RemoveSelectedTarget();
+
+	void RemoveSelectedEntity();
+
+	void ChangeUiState(ActiveUiState activeUiState);
 };

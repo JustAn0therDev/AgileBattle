@@ -272,6 +272,7 @@ void Ui::Draw() {
 		entityInfoPos.y -= 10.0f;
 
 		DrawHpBar(m_SelectedTarget, rec, entityInfoPos);
+		std::cout << m_SelectedTarget->GetHealthPoints() << std::endl;
 	}
 
 	// Creating the mouse cursor
@@ -307,10 +308,32 @@ void Ui::DrawHpBar(Entity* entity, Rectangle entityRectangle, Vector2 position) 
 	DrawTextureRec(m_HealthBarTexture2D, healthBarRectangle, position, WHITE);
 }
 
+Entity* Ui::GetSelectedTarget() const {
+	return m_SelectedTarget;
+}
+
+const Entity* Ui::GetSelectedEntity() const {
+	return m_SelectedEntity;
+}
+
 const Move* Ui::GetSelectedMove() const {
 	return m_SelectedMove;
 }
 
 void Ui::RemoveSelectedMove() {
 	m_SelectedMove = NULL;
+}
+
+void Ui::RemoveSelectedTarget()
+{
+	m_SelectedTarget = NULL;
+}
+
+void Ui::RemoveSelectedEntity()
+{
+	m_SelectedEntity = NULL;
+}
+
+void Ui::ChangeUiState(ActiveUiState activeUiState) {
+	m_ActiveUiState = activeUiState;
 }
