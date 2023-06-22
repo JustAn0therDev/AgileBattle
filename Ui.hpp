@@ -49,7 +49,7 @@ public:
 
 	Entity* GetSelectedTarget() const;
 
-	const Entity* GetSelectedEntity() const;
+	Entity* GetSelectedEntity() const;
 
 	const Move* GetSelectedMove() const;
 
@@ -57,7 +57,11 @@ public:
 
 	void RemoveSelectedTarget();
 
+	void RemoveHoveringEntity();
+
 	void RemoveSelectedEntity();
 
 	void ChangeUiState(ActiveUiState activeUiState);
+
+	void ResetUiState();
 };

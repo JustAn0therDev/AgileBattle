@@ -2,7 +2,7 @@
 #include "BattleState.hpp"
 #include "Ui.hpp"
 #include "Entity.hpp"
-#include <vector>
+#include <map>
 #include "Action.hpp"
 
 class BattleSystem {
@@ -11,9 +11,7 @@ private:
 	float m_LowerHealthLerp;
 	bool m_ProcessingMove;
 public:
-	BattleSystem(
-		Ui* ui
-	);
+	BattleSystem(Ui* ui);
 
 	void Update();
 };

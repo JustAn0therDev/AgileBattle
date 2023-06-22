@@ -115,29 +115,20 @@ void Ui::Update(Entity* entity) {
 
 		bool isCursorOnMenu = m_UpperTextBoxHeightLimit <= m_CursorPosition.y;
 
+		if (isCursorOn) {
+			m_HoveringEntity = entity;
+		}
+		else if (!isCursorOn && entity == m_HoveringEntity) {
+			m_HoveringEntity = NULL;
+		}
+
 		if (m_ActiveUiState == ActiveUiState::SELECTING_TARGET) {
 			if (isCursorOn && entity->GetEntityType() == EntityType::Enemy && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 				m_SelectedTarget = entity;
 			}
-
-			if (entity->GetEntityType() == EntityType::Enemy) {
-				if (isCursorOn) {
-					m_HoveringEntity = entity;
-				}
-				else if (!isCursorOn && entity == m_HoveringEntity) {
-					m_HoveringEntity = NULL;
-				}
-			}
 		}
 		else {
-			if (entity->GetEntityType() == EntityType::TeamMember) {
-				if (isCursorOn) {
-					m_HoveringEntity = entity;
-				}
-				else if (!isCursorOn && entity == m_HoveringEntity) {
-					m_HoveringEntity = NULL;
-				}
-
+			if (entity->GetEntityType() == EntityType::TeamMember && !entity->HasAttackedThisTurn()) {
 				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 					if (isCursorOn) {
 						m_SelectedEntity = entity;
@@ -312,7 +303,7 @@ Entity* Ui::GetSelectedTarget() const {
 	return m_SelectedTarget;
 }
 
-const Entity* Ui::GetSelectedEntity() const {
+Entity* Ui::GetSelectedEntity() const {
 	return m_SelectedEntity;
 }
 
@@ -329,6 +320,11 @@ void Ui::RemoveSelectedTarget()
 	m_SelectedTarget = NULL;
 }
 
+void Ui::RemoveHoveringEntity()
+{
+	m_HoveringEntity = NULL;
+}
+
 void Ui::RemoveSelectedEntity()
 {
 	m_SelectedEntity = NULL;
@@ -336,4 +332,13 @@ void Ui::RemoveSelectedEntity()
 
 void Ui::ChangeUiState(ActiveUiState activeUiState) {
 	m_ActiveUiState = activeUiState;
+}
+
+void Ui::ResetUiState()
+{
+	RemoveSelectedEntity();
+	RemoveHoveringEntity();
+	RemoveSelectedMove();
+	RemoveSelectedTarget();
+	ChangeUiState(ActiveUiState::IDLE);
 }
