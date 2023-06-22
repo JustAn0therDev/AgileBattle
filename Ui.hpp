@@ -3,7 +3,7 @@
 #include <raylib.h>
 #include <vector>
 #include <string>
-#include "ActiveMenuState.hpp"
+#include "ActiveUiState.hpp"
 
 class Ui {
 private:
@@ -13,6 +13,7 @@ private:
 	Vector2 m_CursorPosition;
 	Entity* m_SelectedEntity;
 	Entity* m_HoveringEntity;
+	Entity* m_SelectedTarget;
 	Font m_Font;
 	float m_UpperTextBoxHeightLimit;
 	float m_LowerTextBoxHeightLimit;
@@ -22,12 +23,8 @@ private:
 	Texture2D m_HealthBarTexture2D;
 	Texture2D m_EmptyHealthBarTexture2D;
 	Vector2 m_MoveTextPos;
-	Vector2 m_PassTextPos;
-	Vector2 m_MoveTextSize;
-	Vector2 m_PassTextSize;
-	Rectangle m_MoveRec;
-	Rectangle m_PassRec;
-	ActiveMenuState m_ActiveMenu;
+	ActiveUiState m_ActiveUiState;
+	Move* m_SelectedMove;
 
 	void DrawContextMenu();
 public:
@@ -36,6 +33,8 @@ public:
 	const Font& GetFont();
 
 	bool IsCursorOn(Vector2 pos, Rectangle entityAreaRec);
+
+	bool IsCursorOn(Vector2 pos);
 
 	Vector2 GetCursorPosition();
 
@@ -47,4 +46,8 @@ public:
 		Entity* entity,
 		Rectangle entityRectangle,
 		Vector2 entityInfoPos) const;
+
+	const Move* GetSelectedMove() const;
+
+	void RemoveSelectedMove();
 };

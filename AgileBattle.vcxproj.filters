@@ -83,7 +83,7 @@
     <ClInclude Include="Action.hpp">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="ActiveMenuState.hpp">
+    <ClInclude Include="ActiveUiState.hpp">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

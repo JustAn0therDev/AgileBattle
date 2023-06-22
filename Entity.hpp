@@ -18,6 +18,7 @@ private:
 	Vector2 m_Position;
 	Animation* m_CurrentAnimation;
 	std::vector<Move*> m_Movements;
+	bool m_AttackedThisTurn;
 public:
 	Entity(
 		const char* name,
@@ -48,4 +49,8 @@ public:
 	void AddMove(Move* move);
 
 	const std::vector<Move*>& GetMoves() const;
+
+	const bool HasAttackedThisTurn() const;
+
+	void SetAttackedThisTurn(bool value);
 };

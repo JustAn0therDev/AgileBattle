@@ -33,34 +33,35 @@ BattleScene::BattleScene() {
 		NULL,
 		NULL);
 
-	Move* move = new Move(10.0f, 10.0f, "RESOLVER TAREFA", "Resolve tarefa planejada para a sprint.");
+	Move* golemMove = new Move(10.0f, 10.0f, "COMPLEXIDADE DE RESOLUÇÃO", "Cansa o membro do time durante a resolução da tarefa.");
 
-	Move* move2 = new Move(10.0f, 10.0f, "RECUSAR TAREFA", "Recusa a tarefa.");
-
-	golem->AddMove(move);
-	golem->AddMove(move2);
+	golem->AddMove(golemMove);
 	
-	//Texture2D textureDino
-	//	= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\DinoSprites - doux.png");
+	Texture2D textureDino
+		= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\DinoSprites - doux.png");
 
-	//Vector2 entityPosDino = {
-	//	static_cast<float>((Constants::DEFAULT_WIDTH / 3) - ((textureDino.width / 24) / 2)),
-	//	static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - textureDino.height / 2)
-	//};
+	Vector2 entityPosDino = {
+		static_cast<float>((Constants::DEFAULT_WIDTH / 3) - ((textureDino.width / 24) / 2)),
+		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - textureDino.height / 2)
+	};
 
-	//Animation* dinoAnimation = new Animation(entityPosDino, 5, 24, textureDino, AnimationType::Idle);
+	Animation* dinoAnimation = new Animation(entityPosDino, 5, 24, textureDino, AnimationType::Idle);
 
-	//Entity* dino = new Entity(
-	//	"Front-end",
-	//	EntityType::TeamMember,
-	//	100.0f,
-	//	entityPosDino,
-	//	dinoAnimation,
-	//	NULL,
-	//	NULL,
-	//	NULL);
+	Entity* dino = new Entity(
+		"Front-end",
+		EntityType::TeamMember,
+		100.0f,
+		entityPosDino,
+		dinoAnimation,
+		dinoAnimation,
+		dinoAnimation,
+		dinoAnimation);
 
-	//m_Entities.emplace_back(dino);
+	Move* move = new Move(10.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.");
+	
+	dino->AddMove(move);
+
+	m_Entities.emplace_back(dino);
 	m_Entities.emplace_back(golem);
 }
 
@@ -79,7 +80,10 @@ void BattleScene::Update() {
 		}
 	}
 
-	m_Ui.Draw();
+	// m_Ui.Draw();
+#ifdef _DEBUG
+	DrawFPS(0, 0);
+#endif
 }
 
 BattleScene::~BattleScene() {

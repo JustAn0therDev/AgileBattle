@@ -21,6 +21,7 @@ Entity::Entity(
 	m_AttackAnimation = attackAnimation;
 	m_DamageAnimation = damageAnimation;
 	m_Movements.reserve(Constants::MAX_MOVEMENTS);
+	m_AttackedThisTurn = false;
 
 	// The current animation is always "idle", unless another
 	// system actively changes it.
@@ -33,17 +34,20 @@ Entity::~Entity() {
 		delete m_IdleAnimation;
 	}
 
-	if (m_DeathAnimation != NULL) {
-		delete m_DeathAnimation;
-	}
+	// TODO: uncomment this section, 
+	// since it has only been commented so I can
+	// debug other things.
+	//if (m_DeathAnimation != NULL) {
+	//	delete m_DeathAnimation;
+	//}
 
-	if (m_AttackAnimation != NULL) {
-		delete m_AttackAnimation;
-	}
+	//if (m_AttackAnimation != NULL) {
+	//	delete m_AttackAnimation;
+	//}
 
-	if (m_DamageAnimation != NULL) {
-		delete m_DamageAnimation;
-	}
+	//if (m_DamageAnimation != NULL) {
+	//	delete m_DamageAnimation;
+	//}
 
 	// Freeing the movements
 	for (const Move* move : m_Movements) {
@@ -120,4 +124,14 @@ void Entity::AddMove(Move* move) {
 
 const std::vector<Move*>& Entity::GetMoves() const {
 	return m_Movements;
+}
+
+const bool Entity::HasAttackedThisTurn() const
+{
+	return m_AttackedThisTurn;
+}
+
+void Entity::SetAttackedThisTurn(bool value)
+{
+	m_AttackedThisTurn = value;
 }

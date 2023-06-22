@@ -1,29 +1,16 @@
 #include "Ui.hpp"
 #include "Animation.hpp"
+#include "Constants.hpp"
 #include <string>
 #include <raymath.h>
 #include <vector>
+#include <iostream>
 
 void Ui::DrawContextMenu()
 {
 	std::string arrowBuffer = "->";
 
-	if (m_ActiveMenu == ActiveMenuState::NONE) {
-		if (IsCursorOn(m_MoveTextPos, m_MoveRec)) {
-			DrawTextEx(m_Font, arrowBuffer.append(m_MoveText).c_str(), m_MoveTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
-		}
-		else {
-			DrawTextEx(m_Font, m_MoveText.c_str(), m_MoveTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
-		}
-
-		if (IsCursorOn(m_PassTextPos, m_PassRec)) {
-			DrawTextEx(m_Font, arrowBuffer.append(m_PassText).c_str(), m_PassTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
-		}
-		else {
-			DrawTextEx(m_Font, m_PassText.c_str(), m_PassTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
-		}
-	}
-	else if (m_ActiveMenu == ActiveMenuState::MOVE) {
+	if (m_ActiveUiState == ActiveUiState::MOVE) {
 		std::vector<Move*> entityMovements = m_SelectedEntity->GetMoves();
 
 		Vector2 moveOptionPos = m_MoveTextPos;
@@ -39,11 +26,16 @@ void Ui::DrawContextMenu()
 			Vector2 nameTextSize = MeasureTextEx(m_Font, name, m_DefaultFontSize, m_DefaultFontSpacing);
 			Vector2 detailsTextSize = MeasureTextEx(m_Font, details, m_DefaultFontSize, m_DefaultFontSpacing);
 
-			Rectangle nameRec = { 0.0f, 0.0f, nameTextSize.x, nameTextSize.y - 30 };
-			Rectangle detailsRec = { 0.0f, 0.0f, detailsTextSize.x, detailsTextSize.y - 30 };
+			Rectangle nameRec = { 0.0f, 0.0f, nameTextSize.x, nameTextSize.y - 25 };
+			Rectangle detailsRec = { 0.0f, 0.0f, detailsTextSize.x, detailsTextSize.y - 25 };
 
 			if (IsCursorOn(moveOptionPos, nameRec)) {
 				DrawTextEx(m_Font, arrowBuffer.append(name).c_str(), moveOptionPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+
+				if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+					m_SelectedMove = move;
+					m_ActiveUiState = ActiveUiState::SELECTING_TARGET;
+				}
 			}
 			else {
 				DrawTextEx(m_Font, name, moveOptionPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
@@ -56,28 +48,35 @@ void Ui::DrawContextMenu()
 			moveOptionY += 50;
 		}
 	}
-
+	else if (m_ActiveUiState == ActiveUiState::SELECTING_TARGET) {
+		DrawTextEx(m_Font, "Escolha um alvo para usar seu movimento!", m_MoveTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+	}
 }
 
 Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 {
 	m_DefaultFontSize = 72.0f;
 	m_DefaultFontSpacing = 2.0f;
-	m_Font = LoadFontEx("Assets\\Fonts\\Cloude_Regular_Bold_1.03.otf", m_DefaultFontSize, 0, 256);
+	m_Font = LoadFontEx(
+		"Assets\\Fonts\\Cloude_Regular_Bold_1.03.otf", 
+		static_cast<int>(m_DefaultFontSize), 
+		0, 
+		256);
 	m_SelectedEntity = NULL;
 	m_HoveringEntity = NULL;
+	m_SelectedTarget = NULL;
+	
 	m_UpperTextBoxHeightLimit = 590.0f;
 	m_LowerTextBoxHeightLimit = 794.0f;
 	m_TextBoxWidthLimit = 35.0f;
+	
 	m_HealthBarTexture2D = LoadTexture("Assets\\Images\\Health\\health_bar.png");
 	m_EmptyHealthBarTexture2D = LoadTexture("Assets\\Images\\Health\\empty_bar.png");
-	m_MoveTextSize = MeasureTextEx(m_Font, m_MoveText.c_str(), m_DefaultFontSize, m_DefaultFontSpacing);
-	m_MoveRec = { 0.0f, 0.0f, m_MoveTextSize.x, m_MoveTextSize.y - 30 };
-	m_PassTextSize = MeasureTextEx(m_Font, m_PassText.c_str(), m_DefaultFontSize, m_DefaultFontSpacing);
-	m_PassRec = { 0.0f, 0.0f, m_PassTextSize.x, m_PassTextSize.y - 30 };
+	
 	m_MoveTextPos = { m_TextBoxWidthLimit, m_UpperTextBoxHeightLimit };
-	m_PassTextPos = { m_TextBoxWidthLimit, m_UpperTextBoxHeightLimit + 50 };
-	m_ActiveMenu = ActiveMenuState::NONE;
+	
+	m_ActiveUiState = ActiveUiState::IDLE;
+	m_SelectedMove = NULL;
 }
 
 const Font& Ui::GetFont() {
@@ -92,12 +91,20 @@ bool Ui::IsCursorOn(Vector2 pos, Rectangle entityAreaRec)
 		   m_CursorPosition.y <= (pos.y + entityAreaRec.height);
 }
 
+bool Ui::IsCursorOn(Vector2 pos) {
+	return m_CursorPosition.x >= pos.x &&
+		  m_CursorPosition.x <= pos.x &&
+		  m_CursorPosition.y >= pos.y &&
+		  m_CursorPosition.y <= pos.y;
+}
+
 Vector2 Ui::GetCursorPosition()
 {
 	return m_CursorPosition;
 }
 
 void Ui::Update(Entity* entity) {
+	// TODO: Input should be managed here, not in the draw method.
 	m_CursorPosition = GetMousePosition();
 
 	if (entity != NULL) {
@@ -106,43 +113,54 @@ void Ui::Update(Entity* entity) {
 
 		bool isCursorOn = IsCursorOn(entityPos, rec);
 
-		bool isCursorOnOption = IsCursorOn(m_MoveTextPos, m_MoveRec) || IsCursorOn(m_PassTextPos, m_PassRec);
+		bool isCursorOnMenu = m_UpperTextBoxHeightLimit <= m_CursorPosition.y;
 
-		if (isCursorOn) {
-			m_HoveringEntity = entity;
-		}
-		else if (!isCursorOn && entity == m_HoveringEntity) {
-			m_HoveringEntity = NULL;
-		}
-
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			if (isCursorOn) {
-				m_SelectedEntity = entity;
+		if (m_ActiveUiState == ActiveUiState::SELECTING_TARGET) {
+			if (isCursorOn && entity->GetEntityType() == EntityType::Enemy && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+				m_SelectedTarget = entity;
 			}
-			else if (!isCursorOn && entity == m_SelectedEntity && !isCursorOnOption) {
-				m_SelectedEntity = NULL;
-				// The player is not selecting anything, so there is no way to show the character's moves.
-				m_ActiveMenu = ActiveMenuState::NONE;
+
+			if (entity->GetEntityType() == EntityType::Enemy) {
+				if (isCursorOn) {
+					m_HoveringEntity = entity;
+				}
+				else if (!isCursorOn && entity == m_HoveringEntity) {
+					m_HoveringEntity = NULL;
+				}
 			}
 		}
+		else {
+			if (entity->GetEntityType() == EntityType::TeamMember) {
+				if (isCursorOn) {
+					m_HoveringEntity = entity;
+				}
+				else if (!isCursorOn && entity == m_HoveringEntity) {
+					m_HoveringEntity = NULL;
+				}
+
+				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+					if (isCursorOn) {
+						m_SelectedEntity = entity;
+						m_ActiveUiState = ActiveUiState::MOVE;
+					}
+					else if (!isCursorOn && entity == m_SelectedEntity && !isCursorOnMenu) {
+						m_SelectedEntity = NULL;
+						// The player is not selecting anything, so there is no way to show the character's moves.
+						m_ActiveUiState = ActiveUiState::IDLE;
+					}
+				}
+			}
+		}
 	}
 
-	// After checking an entity, we should check whether the player has clicked on an option 
-	// in the context menu.
-	if (IsCursorOn(m_MoveTextPos, m_MoveRec) && m_SelectedEntity != NULL && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-		m_ActiveMenu = ActiveMenuState::MOVE;
-	}
-	else if (IsCursorOn(m_PassTextPos, m_PassRec)) {
-		// In this case, nothing should be done with the current character
-		// and we should pass.
-		// m_ActiveMenu = ActiveMenuState::PASS;
-	}
+	Draw();
 }
 
 void Ui::Draw() {
-	// TODO: the entities' hp will stay here for now.
 	// We know that entities have health;
 	// so all entities should have their health drawn on screen.
+	// But their health should be managed by the battle system, not by the UI.
+	// The UI should only reflect the health's current state.
 	if (m_SelectedEntity != NULL) {
 		Color color = m_SelectedEntity->GetEntityType() == EntityType::Enemy ? RED : GREEN;
 
@@ -155,7 +173,7 @@ void Ui::Draw() {
 
 		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, color);
 		
-		// Draw the entity's name.
+		// Draw the entity's name on top of it.
 		const char* entityName = m_SelectedEntity->GetName();
 
 		Vector2 textSize = MeasureTextEx(m_Font, entityName, m_DefaultFontSize, m_DefaultFontSpacing);
@@ -183,6 +201,11 @@ void Ui::Draw() {
 		entityInfoPos.y -= 10.0f;
 
 		DrawHpBar(m_SelectedEntity, rec, entityInfoPos);
+
+		// We can only have a context menu if an entity has been selected.
+		if (m_SelectedEntity->GetEntityType() == EntityType::TeamMember && !m_SelectedEntity->HasAttackedThisTurn()) {
+			DrawContextMenu();
+		}
 	}
 
 	if (m_HoveringEntity != NULL && m_SelectedEntity != m_HoveringEntity) {
@@ -218,7 +241,38 @@ void Ui::Draw() {
 		DrawHpBar(m_HoveringEntity, rec, entityInfoPos);
 	}
 
-	DrawContextMenu();
+	if (m_SelectedTarget != NULL) {
+		Vector2 entityPos = m_SelectedTarget->GetPosition();
+		Rectangle rec = m_SelectedTarget->GetCurrentAnimation()->GetAnimationRectangle();
+
+		Vector2 trianglePoint1 = { entityPos.x + (rec.width / 2) + 15, entityPos.y - 25 };
+		Vector2 trianglePoint2 = { entityPos.x + (rec.width / 2) - 15, entityPos.y - 25 };
+		Vector2 trianglePoint3 = { entityPos.x + (rec.width / 2), entityPos.y - 10 };
+
+		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, RED);
+
+		// Draw the entity's name.
+		const char* entityName = m_SelectedTarget->GetName();
+
+		Vector2 textSize = MeasureTextEx(m_Font, entityName, m_DefaultFontSize, m_DefaultFontSpacing);
+
+		Vector2 entityInfoPos = {
+			static_cast<float>((entityPos.x + (rec.width / 2)) - (textSize.x / 2)),
+			entityPos.y - 90.0f };
+
+		DrawTextEx(m_Font,
+			entityName,
+			entityInfoPos,
+			m_DefaultFontSize,
+			m_DefaultFontSpacing,
+			WHITE);
+
+		entityInfoPos.x =
+			static_cast<float>(entityPos.x + (rec.width / 2)) - static_cast<float>((m_EmptyHealthBarTexture2D.width / 2));
+		entityInfoPos.y -= 10.0f;
+
+		DrawHpBar(m_SelectedTarget, rec, entityInfoPos);
+	}
 
 	// Creating the mouse cursor
 	Vector2 mouseCursorTrianglePoint = { m_CursorPosition.x, m_CursorPosition.y };
@@ -251,4 +305,12 @@ void Ui::DrawHpBar(Entity* entity, Rectangle entityRectangle, Vector2 position) 
 
 	DrawTextureRec(m_EmptyHealthBarTexture2D, emptyBarRectangle, position, WHITE);
 	DrawTextureRec(m_HealthBarTexture2D, healthBarRectangle, position, WHITE);
+}
+
+const Move* Ui::GetSelectedMove() const {
+	return m_SelectedMove;
+}
+
+void Ui::RemoveSelectedMove() {
+	m_SelectedMove = NULL;
 }
