@@ -34,20 +34,17 @@ Entity::~Entity() {
 		delete m_IdleAnimation;
 	}
 
-	// TODO: uncomment this section, 
-	// since it has only been commented so I can
-	// debug other things.
-	//if (m_DeathAnimation != NULL) {
-	//	delete m_DeathAnimation;
-	//}
+	if (m_DeathAnimation != NULL) {
+		delete m_DeathAnimation;
+	}
 
-	//if (m_AttackAnimation != NULL) {
-	//	delete m_AttackAnimation;
-	//}
+	if (m_AttackAnimation != NULL) {
+		delete m_AttackAnimation;
+	}
 
-	//if (m_DamageAnimation != NULL) {
-	//	delete m_DamageAnimation;
-	//}
+	if (m_DamageAnimation != NULL) {
+		delete m_DamageAnimation;
+	}
 
 	// Freeing the movements
 	for (const Move* move : m_Movements) {
@@ -97,14 +94,7 @@ const Animation* Entity::GetCurrentAnimation() const {
 	return m_CurrentAnimation;
 }
 
-void Entity::Update(std::vector<Entity*>& entities) {
-	// TODO: The animation will also be handled by the 
-	// battle system, when a character attacks, takes damage or 
-	// perishes in battle.
-	if (IsKeyPressed(KEY_A)) {
-		PlayAnimation(AnimationType::Death);
-	}
-
+void Entity::Update() {
 	if (m_CurrentAnimation != NULL) {
 		m_CurrentAnimation->Update();
 

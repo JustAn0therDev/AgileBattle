@@ -4,14 +4,15 @@
 #include "Entity.hpp"
 #include <map>
 #include "Action.hpp"
+#include <vector>
 
 class BattleSystem {
 private:
 	Ui* m_Ui;
-	float m_LowerHealthLerp;
-	bool m_ProcessingMove;
+	std::vector<Entity*> m_TeamMembers;
+	std::vector<Entity*> m_Enemies;
 public:
-	BattleSystem(Ui* ui);
+	BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Entity*> teamMembers);
 
 	void Update();
 };

@@ -4,7 +4,6 @@
 #include <string>
 #include <raymath.h>
 #include <vector>
-#include <iostream>
 
 void Ui::DrawContextMenu()
 {
@@ -58,9 +57,9 @@ Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 	m_DefaultFontSize = 72.0f;
 	m_DefaultFontSpacing = 2.0f;
 	m_Font = LoadFontEx(
-		"Assets\\Fonts\\Cloude_Regular_Bold_1.03.otf", 
-		static_cast<int>(m_DefaultFontSize), 
-		0, 
+		"Assets\\Fonts\\Cloude_Regular_Bold_1.03.otf",
+		static_cast<int>(m_DefaultFontSize),
+		0,
 		256);
 	m_SelectedEntity = NULL;
 	m_HoveringEntity = NULL;
@@ -263,7 +262,6 @@ void Ui::Draw() {
 		entityInfoPos.y -= 10.0f;
 
 		DrawHpBar(m_SelectedTarget, rec, entityInfoPos);
-		std::cout << m_SelectedTarget->GetHealthPoints() << std::endl;
 	}
 
 	// Creating the mouse cursor

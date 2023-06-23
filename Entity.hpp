@@ -44,7 +44,7 @@ public:
 
 	const Animation* GetCurrentAnimation() const;
 		
-	void Update(std::vector<Entity*>& entities);
+	void Update();
 
 	void AddMove(Move* move);
 
