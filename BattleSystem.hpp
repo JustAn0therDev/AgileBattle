@@ -11,6 +11,7 @@ private:
 	Ui* m_Ui;
 	std::vector<Entity*> m_TeamMembers;
 	std::vector<Entity*> m_Enemies;
+	double m_LastTime;
 public:
 	BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Entity*> teamMembers);
 

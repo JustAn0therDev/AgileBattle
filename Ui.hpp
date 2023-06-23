@@ -25,8 +25,13 @@ private:
 	Vector2 m_MoveTextPos;
 	ActiveUiState m_ActiveUiState;
 	Move* m_SelectedMove;
+	bool m_RunningDamageAnimation;
+	int m_DamageDrawValue;
+	Vector2 m_DesiredDrawDamagePos;
+	Vector2 m_CurrentDrawDamagePos;
 
 	void DrawContextMenu();
+	void DrawDamageAnimation();
 public:
 	Ui();
 
@@ -52,6 +57,10 @@ public:
 	Entity* GetSelectedEntity() const;
 
 	const Move* GetSelectedMove() const;
+
+	void SetSelectedEntity(Entity* entity);
+
+	void SetSelectedTarget(Entity* entity);
 
 	void RemoveSelectedMove();
 

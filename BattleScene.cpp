@@ -59,12 +59,12 @@ BattleScene::BattleScene() {
 	Texture2D attackTextureDino
 		= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\attack.png");
 
-	Animation* attackDinoAnimation = new Animation(entityPosDino, 5, 3, attackTextureDino, AnimationType::Attack);
+	Animation* attackDinoAnimation = new Animation(entityPosDino, 3, 3, attackTextureDino, AnimationType::Attack);
 
 	Texture2D damageTextureDino
 		= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\damage.png");
 
-	Animation* damageDinoAnimation = new Animation(entityPosDino, 5, 3, damageTextureDino, AnimationType::Damage);
+	Animation* damageDinoAnimation = new Animation(entityPosDino, 5, 4, damageTextureDino, AnimationType::Damage);
 
 	Entity* dino = new Entity(
 		"Front-end",

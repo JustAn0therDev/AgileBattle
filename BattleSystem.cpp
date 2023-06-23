@@ -8,6 +8,7 @@ BattleSystem::BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Ent
 	m_Ui = ui;
 	m_TeamMembers = teamMembers;
 	m_Enemies = enemies;
+	m_LastTime = GetTime();
 }
 
 void BattleSystem::Update() {
@@ -25,6 +26,8 @@ void BattleSystem::Update() {
 		m_Ui->ResetUiState();
 
 		attacking->SetAttackedThisTurn(true);
+
+		m_LastTime = GetTime();
 	}
 
 	// checks if player won
@@ -64,14 +67,27 @@ void BattleSystem::Update() {
 		}
 	}
 
-	if (enemyTurn) {
-		size_t rndIndex = static_cast<size_t>(GetRandomValue(0, static_cast<int>(m_TeamMembers.size() - 1)));
-		
-		Entity* teamMemberTarget = m_TeamMembers[rndIndex];
-
+	if (enemyTurn && GetTime() - m_LastTime > 1) {
 		for (const auto enemy : m_Enemies) {
-			if (teamMemberTarget != NULL) {
-				teamMemberTarget->RemoveHealth(enemy->GetMoves()[0]->GetDamage());
+			if (enemy->GetHealthPoints() > 0) {
+				size_t rndIndex =
+					static_cast<size_t>(GetRandomValue(0, static_cast<int>(m_TeamMembers.size() - 1)));
+
+				Entity* teamMemberTarget = m_TeamMembers[rndIndex];
+
+				if (teamMemberTarget != NULL) {
+					teamMemberTarget->RemoveHealth(enemy->GetMoves()[0]->GetDamage());
+				
+					m_Ui->ChangeUiState(ActiveUiState::SELECTING_TARGET);
+					m_Ui->SetSelectedEntity(enemy);
+					m_Ui->SetSelectedTarget(teamMemberTarget);
+
+					enemy->PlayAnimation(AnimationType::Attack);
+					teamMemberTarget->PlayAnimation(AnimationType::Damage);
+
+					// How to show the UiState while the enemy is attacking? 
+					m_Ui->ResetUiState();
+				}
 			}
 		}
 

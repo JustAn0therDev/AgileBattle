@@ -5,6 +5,23 @@
 #include <raymath.h>
 #include <vector>
 
+
+void Ui::DrawDamageAnimation()
+{
+	m_CurrentDrawDamagePos.y = Lerp(m_CurrentDrawDamagePos.y, m_DesiredDrawDamagePos.y, 0.03f);
+	
+	if (floorf(m_CurrentDrawDamagePos.y) == floorf(m_DesiredDrawDamagePos.y)) {
+		m_RunningDamageAnimation = false;
+	}
+
+	DrawTextEx(m_Font, 
+		std::to_string(m_DamageDrawValue).c_str(),
+        m_CurrentDrawDamagePos, 
+		m_DefaultFontSize, 
+		m_DefaultFontSpacing, 
+		WHITE);
+}
+
 void Ui::DrawContextMenu()
 {
 	std::string arrowBuffer = "->";
@@ -76,6 +93,8 @@ Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 	
 	m_ActiveUiState = ActiveUiState::IDLE;
 	m_SelectedMove = NULL;
+
+	m_RunningDamageAnimation = false;
 }
 
 const Font& Ui::GetFont() {
@@ -106,6 +125,10 @@ void Ui::Update(Entity* entity) {
 	// TODO: Input should be managed here, not in the draw method.
 	m_CursorPosition = GetMousePosition();
 
+	if (m_RunningDamageAnimation) {
+		DrawDamageAnimation();
+	}
+
 	if (entity != NULL) {
 		Vector2 entityPos = entity->GetPosition();
 		Rectangle rec = entity->GetCurrentAnimation()->GetAnimationRectangle();
@@ -124,6 +147,25 @@ void Ui::Update(Entity* entity) {
 		if (m_ActiveUiState == ActiveUiState::SELECTING_TARGET) {
 			if (isCursorOn && entity->GetEntityType() == EntityType::Enemy && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 				m_SelectedTarget = entity;
+				m_RunningDamageAnimation = true;
+
+				// TESTING THE DAMAGE SHOW ANIMATION
+				Vector2 entityPos = m_SelectedTarget->GetPosition();
+				Rectangle rec = m_SelectedTarget->GetCurrentAnimation()->GetAnimationRectangle();
+
+				m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage());
+
+				Vector2 damageTextSize = 
+					MeasureTextEx(
+						m_Font, 
+						std::to_string(m_DamageDrawValue).c_str(), 
+						m_DefaultFontSize, 
+						m_DefaultFontSpacing);
+
+				m_CurrentDrawDamagePos = { (entityPos.x + (rec.width / 2.0f) - (damageTextSize.x / 2)), entityPos.y - (rec.height / 2.0f) };
+
+				m_DesiredDrawDamagePos = m_CurrentDrawDamagePos;
+				m_DesiredDrawDamagePos.y -= 50.0f;
 			}
 		}
 		else {
@@ -168,8 +210,8 @@ void Ui::Draw() {
 
 		Vector2 textSize = MeasureTextEx(m_Font, entityName, m_DefaultFontSize, m_DefaultFontSpacing);
 		
-		Vector2 entityInfoPos = {
-			static_cast<float>((entityPos.x + (rec.width / 2)) - (textSize.x / 2)),
+		Vector2 entityInfoPos = { 
+			(entityPos.x + (rec.width / 2.0f) - (textSize.x / 2)),
 			entityPos.y - 90.0f };
 
 		DrawTextEx(m_Font,
@@ -307,6 +349,16 @@ Entity* Ui::GetSelectedEntity() const {
 
 const Move* Ui::GetSelectedMove() const {
 	return m_SelectedMove;
+}
+
+void Ui::SetSelectedEntity(Entity* entity)
+{
+	m_SelectedEntity = entity;
+}
+
+void Ui::SetSelectedTarget(Entity* entity)
+{
+	m_SelectedTarget = entity;
 }
 
 void Ui::RemoveSelectedMove() {
