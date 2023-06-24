@@ -4,10 +4,19 @@
 #include <string>
 #include <raymath.h>
 #include <vector>
+#include <iostream>
 
-
-void Ui::DrawDamageAnimation()
+void Ui::ExecuteDrawDamageAnimation()
 {
+	Color color;
+
+	if (m_DamageHasModifier) {
+		color = GREEN;
+	}
+	else {
+		color = WHITE;
+	}
+
 	m_CurrentDrawDamagePos.y = Lerp(m_CurrentDrawDamagePos.y, m_DesiredDrawDamagePos.y, 0.03f);
 	
 	if (floorf(m_CurrentDrawDamagePos.y) == floorf(m_DesiredDrawDamagePos.y)) {
@@ -19,7 +28,35 @@ void Ui::DrawDamageAnimation()
         m_CurrentDrawDamagePos, 
 		m_DefaultFontSize, 
 		m_DefaultFontSpacing, 
-		WHITE);
+		color);
+}
+
+void Ui::SetupDrawDamageAnimation()
+{
+	m_RunningDamageAnimation = true;
+	Vector2 entityPos = m_SelectedTarget->GetPosition();
+	Rectangle rec = m_SelectedTarget->GetCurrentAnimation()->GetAnimationRectangle();
+
+	m_DamageHasModifier = m_SelectedMove->GetMoveType() == m_SelectedTarget->GetWeakness();
+
+	if (m_DamageHasModifier) {
+		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage()) * 2;
+	}
+	else {
+		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage());
+	}
+
+	Vector2 damageTextSize =
+		MeasureTextEx(
+			m_Font,
+			std::to_string(m_DamageDrawValue).c_str(),
+			m_DefaultFontSize,
+			m_DefaultFontSpacing);
+
+	m_CurrentDrawDamagePos = { (entityPos.x + (rec.width / 2.0f) - (damageTextSize.x / 2)), entityPos.y - (rec.height / 2.0f) };
+
+	m_DesiredDrawDamagePos = m_CurrentDrawDamagePos;
+	m_DesiredDrawDamagePos.y -= 50.0f;
 }
 
 void Ui::DrawContextMenu()
@@ -95,6 +132,11 @@ Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 	m_SelectedMove = NULL;
 
 	m_RunningDamageAnimation = false;
+
+	m_CurrentDrawDamagePos = Vector2Zero();
+	m_DesiredDrawDamagePos = Vector2Zero();
+	m_DamageDrawValue = 0;
+	m_DamageHasModifier = false;
 }
 
 const Font& Ui::GetFont() {
@@ -126,7 +168,7 @@ void Ui::Update(Entity* entity) {
 	m_CursorPosition = GetMousePosition();
 
 	if (m_RunningDamageAnimation) {
-		DrawDamageAnimation();
+		ExecuteDrawDamageAnimation();
 	}
 
 	if (entity != NULL) {
@@ -147,25 +189,7 @@ void Ui::Update(Entity* entity) {
 		if (m_ActiveUiState == ActiveUiState::SELECTING_TARGET) {
 			if (isCursorOn && entity->GetEntityType() == EntityType::Enemy && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 				m_SelectedTarget = entity;
-				m_RunningDamageAnimation = true;
-
-				// TESTING THE DAMAGE SHOW ANIMATION
-				Vector2 entityPos = m_SelectedTarget->GetPosition();
-				Rectangle rec = m_SelectedTarget->GetCurrentAnimation()->GetAnimationRectangle();
-
-				m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage());
-
-				Vector2 damageTextSize = 
-					MeasureTextEx(
-						m_Font, 
-						std::to_string(m_DamageDrawValue).c_str(), 
-						m_DefaultFontSize, 
-						m_DefaultFontSpacing);
-
-				m_CurrentDrawDamagePos = { (entityPos.x + (rec.width / 2.0f) - (damageTextSize.x / 2)), entityPos.y - (rec.height / 2.0f) };
-
-				m_DesiredDrawDamagePos = m_CurrentDrawDamagePos;
-				m_DesiredDrawDamagePos.y -= 50.0f;
+				SetupDrawDamageAnimation();
 			}
 		}
 		else {
@@ -359,6 +383,11 @@ void Ui::SetSelectedEntity(Entity* entity)
 void Ui::SetSelectedTarget(Entity* entity)
 {
 	m_SelectedTarget = entity;
+}
+
+void Ui::SetSelectedMove(Move* move)
+{
+	m_SelectedMove = move;
 }
 
 void Ui::RemoveSelectedMove() {

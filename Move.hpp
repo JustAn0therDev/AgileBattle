@@ -1,4 +1,5 @@
 #pragma once
+#include "MoveType.hpp"
 
 class Move {
 private:
@@ -6,8 +7,9 @@ private:
 	float m_Healing;
 	const char* m_Name;
 	const char* m_Details;
+	MoveType m_MoveType;
 public:
-	Move(float damage, float healing, const char* name, const char* details);
+	Move(float damage, float healing, const char* name, const char* details, MoveType moveType);
 
 	float GetDamage() const;
 
@@ -16,4 +18,6 @@ public:
 	const char* GetName() const;
 
 	const char* GetDetails() const;
+
+	MoveType GetMoveType() const;
 };

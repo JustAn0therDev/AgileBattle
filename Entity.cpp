@@ -11,7 +11,8 @@ Entity::Entity(
 	Animation* idleAnimation,
 	Animation* deathAnimation,
 	Animation* attackAnimation,
-	Animation* damageAnimation) {
+	Animation* damageAnimation,
+	MoveType weakness) {
 	m_Name = name;
 	m_EntityType = entityType;
 	m_HealthPoints = healthPoints;
@@ -22,6 +23,7 @@ Entity::Entity(
 	m_DamageAnimation = damageAnimation;
 	m_Movements.reserve(Constants::MAX_MOVEMENTS);
 	m_AttackedThisTurn = false;
+	m_Weakness = weakness;
 
 	// The current animation is always "idle", unless another
 	// system actively changes it.
@@ -135,4 +137,9 @@ void Entity::AddHealth(float healing) {
 void Entity::SetHealth(float healthPoints)
 {
 	m_HealthPoints = healthPoints;
+}
+
+MoveType Entity::GetWeakness() const
+{
+	return m_Weakness;
 }

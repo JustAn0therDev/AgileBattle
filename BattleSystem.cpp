@@ -18,7 +18,13 @@ void BattleSystem::Update() {
 	if (attacking != NULL && target != NULL) {
 		const Move* move = m_Ui->GetSelectedMove();
 
-		target->RemoveHealth(move->GetDamage());
+		float modifier = 1;
+
+		if (move->GetMoveType() == target->GetWeakness()) {
+			modifier *= 2;
+		}
+
+		target->RemoveHealth(move->GetDamage() * modifier);
 
 		attacking->PlayAnimation(AnimationType::Attack);
 		target->PlayAnimation(AnimationType::Damage);
@@ -33,6 +39,7 @@ void BattleSystem::Update() {
 	// checks if player won
 
 	bool playerWins = true;
+
 	for (const auto enemy : m_Enemies) {
 		if (enemy->GetHealthPoints() > 0) {
 			playerWins = false;
@@ -76,16 +83,17 @@ void BattleSystem::Update() {
 				Entity* teamMemberTarget = m_TeamMembers[rndIndex];
 
 				if (teamMemberTarget != NULL) {
-					teamMemberTarget->RemoveHealth(enemy->GetMoves()[0]->GetDamage());
+					Move* enemyMove = enemy->GetMoves()[0];
+					teamMemberTarget->RemoveHealth(enemyMove->GetDamage());
 				
 					m_Ui->ChangeUiState(ActiveUiState::SELECTING_TARGET);
 					m_Ui->SetSelectedEntity(enemy);
+					m_Ui->SetSelectedMove(enemyMove);
 					m_Ui->SetSelectedTarget(teamMemberTarget);
 
 					enemy->PlayAnimation(AnimationType::Attack);
 					teamMemberTarget->PlayAnimation(AnimationType::Damage);
 
-					// How to show the UiState while the enemy is attacking? 
 					m_Ui->ResetUiState();
 				}
 			}

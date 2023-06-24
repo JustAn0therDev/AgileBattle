@@ -27,11 +27,13 @@ private:
 	Move* m_SelectedMove;
 	bool m_RunningDamageAnimation;
 	int m_DamageDrawValue;
+	bool m_DamageHasModifier;
 	Vector2 m_DesiredDrawDamagePos;
 	Vector2 m_CurrentDrawDamagePos;
 
 	void DrawContextMenu();
-	void DrawDamageAnimation();
+	void ExecuteDrawDamageAnimation();
+	void SetupDrawDamageAnimation();
 public:
 	Ui();
 
@@ -61,6 +63,8 @@ public:
 	void SetSelectedEntity(Entity* entity);
 
 	void SetSelectedTarget(Entity* entity);
+
+	void SetSelectedMove(Move* move);
 
 	void RemoveSelectedMove();
 

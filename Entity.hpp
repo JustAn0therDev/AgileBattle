@@ -5,6 +5,7 @@
 #include "AnimationType.hpp"
 #include "EntityType.hpp"
 #include "Move.hpp"
+#include "MoveType.hpp"
 
 class Entity {
 private:
@@ -19,6 +20,7 @@ private:
 	Animation* m_CurrentAnimation;
 	std::vector<Move*> m_Movements;
 	bool m_AttackedThisTurn;
+	MoveType m_Weakness;
 public:
 	Entity(
 		const char* name,
@@ -28,7 +30,8 @@ public:
 		Animation* idleAnimation, 
 		Animation* deathAnimation,
 		Animation* attackAnimation,
-		Animation* damageAnimation);
+		Animation* damageAnimation,
+		MoveType m_Weakness);
 
 	~Entity();
 
@@ -59,4 +62,6 @@ public:
 	void AddHealth(float healing);
 
 	void SetHealth(float healthPoints);
+
+	MoveType GetWeakness() const;
 };

@@ -33,16 +33,17 @@ BattleScene::BattleScene() {
 	Animation* attackAnimation = new Animation(entityPos, 5, 6, attackAnimationTextureImage, AnimationType::Attack);
 
 	Entity* golem = new Entity(
-		"Tarefa #1",
+		"Tarefa: Desenv. Interface",
 		EntityType::Enemy,
 		100.0f,
 		entityPos,
 		idleAnimation,
 		deathAnimation,
 		attackAnimation,
-		damageAnimation);
+		damageAnimation,
+		MoveType::FrontEnd);
 
-	Move* golemMove = new Move(10.0f, 10.0f, "COMPLEXIDADE DE RESOLUÇÃO", "Cansa o membro do time durante a resolução da tarefa.");
+	Move* golemMove = new Move(10.0f, 10.0f, "COMPLEXIDADE DE RESOLUÇÃO", "Cansa o membro do time durante a resolução da tarefa.", MoveType::None);
 
 	golem->AddMove(golemMove);
 	
@@ -74,11 +75,14 @@ BattleScene::BattleScene() {
 		idleDinoAnimation,
 		NULL,
 		attackDinoAnimation,
-		damageDinoAnimation);
+		damageDinoAnimation,
+		MoveType::ProductOwner);
 
-	Move* move = new Move(10.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.");
+	Move* move = new Move(10.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.", MoveType::FrontEnd);
+	Move* move2 = new Move(10.0f, 10.0f, "Resolver", "Resolve tarefa sem habilidade especifica", MoveType::None);
 	
 	dino->AddMove(move);
+	dino->AddMove(move2);
 
 	m_Entities.emplace_back(dino);
 	m_Entities.emplace_back(golem);
