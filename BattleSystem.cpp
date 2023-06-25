@@ -1,4 +1,5 @@
 #include "BattleSystem.hpp"
+#include "Constants.hpp"
 #include <raymath.h>
 #include <vector>
 #include <map>
@@ -12,16 +13,16 @@ BattleSystem::BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Ent
 }
 
 void BattleSystem::Update() {
-	Entity* target = m_Ui->GetSelectedTarget();
 	Entity* attacking = m_Ui->GetSelectedEntity();
+	Entity* target = m_Ui->GetSelectedTarget();
 
-	if (attacking != NULL && target != NULL) {
+	if (attacking != NULL && target != NULL && GetTime() - m_LastTime > 1 && !m_Ui->IsLocked()) {
 		const Move* move = m_Ui->GetSelectedMove();
 
 		float modifier = 1;
 
 		if (move->GetMoveType() == target->GetWeakness()) {
-			modifier *= 2;
+			modifier *= Constants::DAMAGE_MODIFIER; // weakness takes damage * modifier
 		}
 
 		target->RemoveHealth(move->GetDamage() * modifier);
@@ -29,7 +30,7 @@ void BattleSystem::Update() {
 		attacking->PlayAnimation(AnimationType::Attack);
 		target->PlayAnimation(AnimationType::Damage);
 
-		m_Ui->ResetUiState();
+		m_Ui->Lock();
 
 		attacking->SetAttackedThisTurn(true);
 
@@ -48,7 +49,7 @@ void BattleSystem::Update() {
 	}
 
 	if (playerWins) {
-		exit(1); // close the gaem.
+		m_Ui->SetPlayerWon();
 	}
 
 	// checks if player lost
@@ -63,7 +64,7 @@ void BattleSystem::Update() {
 	}
 
 	if (playerLost) {
-		exit(1); // close the gaem.
+		m_Ui->SetPlayerLost();
 	}
 
 	bool enemyTurn = true;
@@ -85,16 +86,22 @@ void BattleSystem::Update() {
 				if (teamMemberTarget != NULL) {
 					Move* enemyMove = enemy->GetMoves()[0];
 					teamMemberTarget->RemoveHealth(enemyMove->GetDamage());
-				
-					m_Ui->ChangeUiState(ActiveUiState::SELECTING_TARGET);
+					
+					// Change the UI State in such a way that it simulates a player event.
+					m_Ui->ReleaseLock();
+					m_Ui->ResetUiState();
+					m_Ui->ChangeUiState(ActiveUiState::MOVE);
 					m_Ui->SetSelectedEntity(enemy);
 					m_Ui->SetSelectedMove(enemyMove);
 					m_Ui->SetSelectedTarget(teamMemberTarget);
+					m_Ui->SetupDrawDamageAnimation();
 
 					enemy->PlayAnimation(AnimationType::Attack);
 					teamMemberTarget->PlayAnimation(AnimationType::Damage);
 
-					m_Ui->ResetUiState();
+					m_Ui->Lock();
+
+					m_LastTime = GetTime();
 				}
 			}
 		}
@@ -104,5 +111,10 @@ void BattleSystem::Update() {
 		for (const auto teamMember : m_TeamMembers) {
 			teamMember->SetAttackedThisTurn(false);
 		}
+	}
+
+	if (GetTime() - m_LastTime > 1 && m_Ui->IsLocked()) {
+		m_Ui->ReleaseLock();
+		m_Ui->ResetUiState();
 	}
 }

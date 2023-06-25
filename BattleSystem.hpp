@@ -12,6 +12,10 @@ private:
 	std::vector<Entity*> m_TeamMembers;
 	std::vector<Entity*> m_Enemies;
 	double m_LastTime;
+	bool m_EnemyAttacking;
+	Entity* m_Attacking;
+	Entity* m_Target;
+	const Move* m_SelectedMove;
 public:
 	BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Entity*> teamMembers);
 

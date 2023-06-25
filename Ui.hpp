@@ -30,10 +30,14 @@ private:
 	bool m_DamageHasModifier;
 	Vector2 m_DesiredDrawDamagePos;
 	Vector2 m_CurrentDrawDamagePos;
+	bool m_Locked;
+	bool m_PlayerWon;
+	bool m_PlayerLost;
 
-	void DrawContextMenu();
+	void UpdateContextMenu();
 	void ExecuteDrawDamageAnimation();
-	void SetupDrawDamageAnimation();
+	void DrawWinText() const;
+	void DrawLoseText() const;
 public:
 	Ui();
 
@@ -44,6 +48,8 @@ public:
 	bool IsCursorOn(Vector2 pos);
 
 	Vector2 GetCursorPosition();
+	
+	void SetupDrawDamageAnimation();
 
 	void Update(Entity* entity);
 
@@ -53,6 +59,8 @@ public:
 		Entity* entity,
 		Rectangle entityRectangle,
 		Vector2 entityInfoPos) const;
+
+	void DrawEntityInformation(Entity* entity) const;
 
 	Entity* GetSelectedTarget() const;
 
@@ -77,4 +85,14 @@ public:
 	void ChangeUiState(ActiveUiState activeUiState);
 
 	void ResetUiState();
+
+	void Lock();
+
+	void ReleaseLock();
+
+	bool IsLocked() const;
+
+	void SetPlayerWon();
+
+	void SetPlayerLost();
 };

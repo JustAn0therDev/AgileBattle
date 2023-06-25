@@ -40,7 +40,7 @@ void Ui::SetupDrawDamageAnimation()
 	m_DamageHasModifier = m_SelectedMove->GetMoveType() == m_SelectedTarget->GetWeakness();
 
 	if (m_DamageHasModifier) {
-		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage()) * 2;
+		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage()) * Constants::DAMAGE_MODIFIER;
 	}
 	else {
 		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage());
@@ -59,7 +59,7 @@ void Ui::SetupDrawDamageAnimation()
 	m_DesiredDrawDamagePos.y -= 50.0f;
 }
 
-void Ui::DrawContextMenu()
+void Ui::UpdateContextMenu()
 {
 	std::string arrowBuffer = "->";
 
@@ -137,6 +137,10 @@ Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 	m_DesiredDrawDamagePos = Vector2Zero();
 	m_DamageDrawValue = 0;
 	m_DamageHasModifier = false;
+	m_Locked = false;
+
+	m_PlayerLost = false;
+	m_PlayerWon = false;
 }
 
 const Font& Ui::GetFont() {
@@ -164,14 +168,13 @@ Vector2 Ui::GetCursorPosition()
 }
 
 void Ui::Update(Entity* entity) {
-	// TODO: Input should be managed here, not in the draw method.
 	m_CursorPosition = GetMousePosition();
 
 	if (m_RunningDamageAnimation) {
 		ExecuteDrawDamageAnimation();
 	}
 
-	if (entity != NULL) {
+	if (entity != NULL && !m_Locked) {
 		Vector2 entityPos = entity->GetPosition();
 		Rectangle rec = entity->GetCurrentAnimation()->GetAnimationRectangle();
 
@@ -193,7 +196,9 @@ void Ui::Update(Entity* entity) {
 			}
 		}
 		else {
-			if (entity->GetEntityType() == EntityType::TeamMember && !entity->HasAttackedThisTurn()) {
+			if (entity->GetEntityType() == EntityType::TeamMember && 
+				!entity->HasAttackedThisTurn() &&
+				entity->GetHealthPoints() > 0.0f) {
 				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 					if (isCursorOn) {
 						m_SelectedEntity = entity;
@@ -218,116 +223,27 @@ void Ui::Draw() {
 	// But their health should be managed by the battle system, not by the UI.
 	// The UI should only reflect the health's current state.
 	if (m_SelectedEntity != NULL) {
-		Color color = m_SelectedEntity->GetEntityType() == EntityType::Enemy ? RED : GREEN;
-
-		Vector2 entityPos = m_SelectedEntity->GetPosition();
-		Rectangle rec = m_SelectedEntity->GetCurrentAnimation()->GetAnimationRectangle();
-
-		Vector2 trianglePoint1 = { entityPos.x + (rec.width / 2) + 15, entityPos.y - 25 };
-		Vector2 trianglePoint2 = { entityPos.x + (rec.width / 2) - 15, entityPos.y - 25 };
-		Vector2 trianglePoint3 = { entityPos.x + (rec.width / 2), entityPos.y - 10 };
-
-		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, color);
-		
-		// Draw the entity's name on top of it.
-		const char* entityName = m_SelectedEntity->GetName();
-
-		Vector2 textSize = MeasureTextEx(m_Font, entityName, m_DefaultFontSize, m_DefaultFontSpacing);
-		
-		Vector2 entityInfoPos = { 
-			(entityPos.x + (rec.width / 2.0f) - (textSize.x / 2)),
-			entityPos.y - 90.0f };
-
-		DrawTextEx(m_Font,
-			entityName,
-			entityInfoPos,
-			m_DefaultFontSize,
-			m_DefaultFontSpacing,
-			WHITE);
-
-		Rectangle emptyBarRectangle = { 
-			0.0f,
-			0.0f,
-			static_cast<float>(m_EmptyHealthBarTexture2D.width),
-			static_cast<float>(m_EmptyHealthBarTexture2D.height / 4.0f)
-		};
-
-		entityInfoPos.x =
-			static_cast<float>(entityPos.x + (rec.width / 2)) - static_cast<float>((m_EmptyHealthBarTexture2D.width / 2));
-		entityInfoPos.y -= 10.0f;
-
-		DrawHpBar(m_SelectedEntity, rec, entityInfoPos);
+		DrawEntityInformation(m_SelectedEntity);
 
 		// We can only have a context menu if an entity has been selected.
 		if (m_SelectedEntity->GetEntityType() == EntityType::TeamMember && !m_SelectedEntity->HasAttackedThisTurn()) {
-			DrawContextMenu();
+			UpdateContextMenu();
 		}
 	}
 
 	if (m_HoveringEntity != NULL && m_SelectedEntity != m_HoveringEntity) {
-		Vector2 entityPos = m_HoveringEntity->GetPosition();
-		Rectangle rec = m_HoveringEntity->GetCurrentAnimation()->GetAnimationRectangle();
-
-		Vector2 trianglePoint1 = { entityPos.x + (rec.width / 2) + 15, entityPos.y - 25 };
-		Vector2 trianglePoint2 = { entityPos.x + (rec.width / 2) - 15, entityPos.y - 25 };
-		Vector2 trianglePoint3 = { entityPos.x + (rec.width / 2), entityPos.y - 10 };
-
-		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, BLACK);
-
-		// Draw the entity's name.
-		const char* entityName = m_HoveringEntity->GetName();
-
-		Vector2 textSize = MeasureTextEx(m_Font, entityName, m_DefaultFontSize, m_DefaultFontSpacing);
-
-		Vector2 entityInfoPos = { 
-			static_cast<float>((entityPos.x + (rec.width / 2)) - (textSize.x / 2)),
-			entityPos.y - 90.0f };
-
-		DrawTextEx(m_Font,
-			entityName,
-			entityInfoPos,
-			m_DefaultFontSize,
-			m_DefaultFontSpacing,
-			WHITE);
-
-		entityInfoPos.x =
-			static_cast<float>(entityPos.x + (rec.width / 2)) - static_cast<float>((m_EmptyHealthBarTexture2D.width / 2));
-		entityInfoPos.y -= 10.0f;
-
-		DrawHpBar(m_HoveringEntity, rec, entityInfoPos);
+		DrawEntityInformation(m_HoveringEntity);
 	}
 
 	if (m_SelectedTarget != NULL) {
-		Vector2 entityPos = m_SelectedTarget->GetPosition();
-		Rectangle rec = m_SelectedTarget->GetCurrentAnimation()->GetAnimationRectangle();
+		DrawEntityInformation(m_SelectedTarget);
+	}
 
-		Vector2 trianglePoint1 = { entityPos.x + (rec.width / 2) + 15, entityPos.y - 25 };
-		Vector2 trianglePoint2 = { entityPos.x + (rec.width / 2) - 15, entityPos.y - 25 };
-		Vector2 trianglePoint3 = { entityPos.x + (rec.width / 2), entityPos.y - 10 };
-
-		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, RED);
-
-		// Draw the entity's name.
-		const char* entityName = m_SelectedTarget->GetName();
-
-		Vector2 textSize = MeasureTextEx(m_Font, entityName, m_DefaultFontSize, m_DefaultFontSpacing);
-
-		Vector2 entityInfoPos = {
-			static_cast<float>((entityPos.x + (rec.width / 2)) - (textSize.x / 2)),
-			entityPos.y - 90.0f };
-
-		DrawTextEx(m_Font,
-			entityName,
-			entityInfoPos,
-			m_DefaultFontSize,
-			m_DefaultFontSpacing,
-			WHITE);
-
-		entityInfoPos.x =
-			static_cast<float>(entityPos.x + (rec.width / 2)) - static_cast<float>((m_EmptyHealthBarTexture2D.width / 2));
-		entityInfoPos.y -= 10.0f;
-
-		DrawHpBar(m_SelectedTarget, rec, entityInfoPos);
+	if (m_PlayerWon) {
+		DrawWinText();
+	}
+	else if (m_PlayerLost) {
+		DrawLoseText();
 	}
 
 	// Creating the mouse cursor
@@ -361,6 +277,51 @@ void Ui::DrawHpBar(Entity* entity, Rectangle entityRectangle, Vector2 position) 
 
 	DrawTextureRec(m_EmptyHealthBarTexture2D, emptyBarRectangle, position, WHITE);
 	DrawTextureRec(m_HealthBarTexture2D, healthBarRectangle, position, WHITE);
+}
+
+void Ui::DrawEntityInformation(Entity* entity) const
+{
+	if (entity != NULL) {
+		Color color = entity->GetEntityType() == EntityType::Enemy ? RED : GREEN;
+
+		Vector2 entityPos = entity->GetPosition();
+		Rectangle rec = entity->GetCurrentAnimation()->GetAnimationRectangle();
+
+		Vector2 trianglePoint1 = { entityPos.x + (rec.width / 2) + 15, entityPos.y - 25 };
+		Vector2 trianglePoint2 = { entityPos.x + (rec.width / 2) - 15, entityPos.y - 25 };
+		Vector2 trianglePoint3 = { entityPos.x + (rec.width / 2), entityPos.y - 10 };
+
+		DrawTriangle(trianglePoint1, trianglePoint2, trianglePoint3, color);
+
+		// Draw the entity's name on top of it.
+		const char* entityName = entity->GetName();
+
+		Vector2 textSize = MeasureTextEx(m_Font, entityName, m_DefaultFontSize, m_DefaultFontSpacing);
+
+		Vector2 entityInfoPos = {
+			(entityPos.x + (rec.width / 2.0f) - (textSize.x / 2)),
+			entityPos.y - 90.0f };
+
+		DrawTextEx(m_Font,
+			entityName,
+			entityInfoPos,
+			m_DefaultFontSize,
+			m_DefaultFontSpacing,
+			WHITE);
+
+		Rectangle emptyBarRectangle = {
+			0.0f,
+			0.0f,
+			static_cast<float>(m_EmptyHealthBarTexture2D.width),
+			static_cast<float>(m_EmptyHealthBarTexture2D.height / 4.0f)
+		};
+
+		entityInfoPos.x =
+			static_cast<float>(entityPos.x + (rec.width / 2)) - static_cast<float>((m_EmptyHealthBarTexture2D.width / 2));
+		entityInfoPos.y -= 10.0f;
+
+		DrawHpBar(entity, rec, entityInfoPos);
+	}
 }
 
 Entity* Ui::GetSelectedTarget() const {
@@ -420,4 +381,51 @@ void Ui::ResetUiState()
 	RemoveSelectedMove();
 	RemoveSelectedTarget();
 	ChangeUiState(ActiveUiState::IDLE);
+}
+
+void Ui::Lock()
+{
+	m_Locked = true;
+}
+
+void Ui::ReleaseLock() 
+{
+	m_Locked = false;
+}
+
+bool Ui::IsLocked() const
+{
+	return m_Locked;
+}
+
+void Ui::SetPlayerWon()
+{
+	m_PlayerWon = true;
+}
+
+void Ui::SetPlayerLost()
+{
+	m_PlayerLost = true;
+}
+
+void Ui::DrawWinText() const
+{
+	const char* winText = "VOCE VENCEU!";
+	
+	Vector2 textSize = MeasureTextEx(m_Font, winText, m_DefaultFontSize, m_DefaultFontSpacing);
+
+	Vector2 textPos = { (Constants::DEFAULT_WIDTH / 2) - (textSize.x / 2), (Constants::DEFAULT_HEIGHT / 2) - (textSize.y / 2) };
+
+	DrawTextEx(m_Font, winText, textPos, m_DefaultFontSize, m_DefaultFontSpacing, GREEN);
+}
+
+void Ui::DrawLoseText() const
+{
+	const char* loseText = "VOCE PERDEU!";
+
+	Vector2 textSize = MeasureTextEx(m_Font, loseText, m_DefaultFontSize, m_DefaultFontSpacing);
+
+	Vector2 textPos = { (Constants::DEFAULT_WIDTH / 2) - (textSize.x / 2), (Constants::DEFAULT_HEIGHT / 2) - (textSize.y / 2) };
+
+	DrawTextEx(m_Font, loseText, textPos, m_DefaultFontSize, m_DefaultFontSpacing, RED);
 }
