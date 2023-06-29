@@ -6,7 +6,6 @@
 #include "BattleScene.hpp"
 #include "Constants.hpp"
 #include "TitleScene.hpp"
-#include <clocale>
 
 int main(void) {
 	InitWindow(Constants::DEFAULT_WIDTH, Constants::DEFAULT_HEIGHT, "Agile Battle");

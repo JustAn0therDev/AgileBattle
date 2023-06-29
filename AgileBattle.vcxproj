@@ -154,6 +154,7 @@
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="ActiveUiState.hpp" />
+    <ClInclude Include="LockContext.hpp" />
     <ClInclude Include="Move.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="TitleScene.hpp" />

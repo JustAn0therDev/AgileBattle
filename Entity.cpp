@@ -22,7 +22,6 @@ Entity::Entity(
 	m_AttackAnimation = attackAnimation;
 	m_DamageAnimation = damageAnimation;
 	m_Movements.reserve(Constants::MAX_MOVEMENTS);
-	m_AttackedThisTurn = false;
 	m_Weakness = weakness;
 
 	// The current animation is always "idle", unless another
@@ -113,16 +112,6 @@ void Entity::AddMove(Move* move) {
 
 const std::vector<Move*>& Entity::GetMoves() const {
 	return m_Movements;
-}
-
-const bool Entity::HasAttackedThisTurn() const
-{
-	return m_AttackedThisTurn;
-}
-
-void Entity::SetAttackedThisTurn(bool value)
-{
-	m_AttackedThisTurn = value;
 }
 
 void Entity::RemoveHealth(float damage)

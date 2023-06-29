@@ -16,7 +16,10 @@ void BattleSystem::Update() {
 	Entity* attacking = m_Ui->GetSelectedEntity();
 	Entity* target = m_Ui->GetSelectedTarget();
 
-	if (attacking != NULL && target != NULL && GetTime() - m_LastTime > 1 && !m_Ui->IsLocked()) {
+	if (attacking != NULL &&
+		target != NULL &&
+		GetTime() - m_LastTime > 1 &&
+		m_Ui->GetLockContext() == LockContext::NoLocks) {
 		const Move* move = m_Ui->GetSelectedMove();
 
 		float modifier = 1;
@@ -30,9 +33,7 @@ void BattleSystem::Update() {
 		attacking->PlayAnimation(AnimationType::Attack);
 		target->PlayAnimation(AnimationType::Damage);
 
-		m_Ui->Lock();
-
-		attacking->SetAttackedThisTurn(true);
+		m_Ui->Lock(LockContext::PlayerAttack);
 
 		m_LastTime = GetTime();
 	}
@@ -67,53 +68,40 @@ void BattleSystem::Update() {
 		m_Ui->SetPlayerLost();
 	}
 
-	bool enemyTurn = true;
+	if (GetTime() - m_LastTime > 1 &&
+		target != NULL &&
+		m_Ui->GetLockContext() == LockContext::PlayerAttack) {
+		// Process enemy attacks
+		if (target->GetHealthPoints() > 0) {
+			size_t rndIndex =
+				static_cast<size_t>(GetRandomValue(0, static_cast<int>(m_TeamMembers.size() - 1)));
 
-	for (const auto teamMember : m_TeamMembers) {
-		if (teamMember != NULL && !teamMember->HasAttackedThisTurn()) {
-			enemyTurn = false;
-		}
-	}
+			Entity* teamMemberTarget = m_TeamMembers[rndIndex];
 
-	if (enemyTurn && GetTime() - m_LastTime > 1) {
-		for (const auto enemy : m_Enemies) {
-			if (enemy->GetHealthPoints() > 0) {
-				size_t rndIndex =
-					static_cast<size_t>(GetRandomValue(0, static_cast<int>(m_TeamMembers.size() - 1)));
-
-				Entity* teamMemberTarget = m_TeamMembers[rndIndex];
-
-				if (teamMemberTarget != NULL) {
-					Move* enemyMove = enemy->GetMoves()[0];
-					teamMemberTarget->RemoveHealth(enemyMove->GetDamage());
+			if (teamMemberTarget != NULL) {
+				Move* enemyMove = target->GetMoves()[0];
+				teamMemberTarget->RemoveHealth(enemyMove->GetDamage());
 					
-					// Change the UI State in such a way that it simulates a player event.
-					m_Ui->ReleaseLock();
-					m_Ui->ResetUiState();
-					m_Ui->ChangeUiState(ActiveUiState::MOVE);
-					m_Ui->SetSelectedEntity(enemy);
-					m_Ui->SetSelectedMove(enemyMove);
-					m_Ui->SetSelectedTarget(teamMemberTarget);
-					m_Ui->SetupDrawDamageAnimation();
+				// Change the UI State in such a way that it simulates a player event.
+				m_Ui->ReleaseLock();
+				m_Ui->ResetUiState();
+				m_Ui->ChangeUiState(ActiveUiState::MOVE);
+				m_Ui->SetSelectedEntity(target);
+				m_Ui->SetSelectedMove(enemyMove);
+				m_Ui->SetSelectedTarget(teamMemberTarget);
+				m_Ui->SetupDrawDamageAnimation();
 
-					enemy->PlayAnimation(AnimationType::Attack);
-					teamMemberTarget->PlayAnimation(AnimationType::Damage);
+				target->PlayAnimation(AnimationType::Attack);
+				teamMemberTarget->PlayAnimation(AnimationType::Damage);
 
-					m_Ui->Lock();
+				m_Ui->Lock(LockContext::EnemyAttack);
 
-					m_LastTime = GetTime();
-				}
+				m_LastTime = GetTime();
 			}
 		}
-
-		enemyTurn = false;
-
-		for (const auto teamMember : m_TeamMembers) {
-			teamMember->SetAttackedThisTurn(false);
-		}
 	}
 
-	if (GetTime() - m_LastTime > 1 && m_Ui->IsLocked()) {
+	if (GetTime() - m_LastTime > 1 && m_Ui->GetLockContext() == LockContext::EnemyAttack) {
 		m_Ui->ReleaseLock();
 		m_Ui->ResetUiState();
 	}

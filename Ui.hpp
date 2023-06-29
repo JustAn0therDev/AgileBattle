@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "ActiveUiState.hpp"
+#include "LockContext.hpp"
 
 class Ui {
 private:
@@ -30,7 +31,7 @@ private:
 	bool m_DamageHasModifier;
 	Vector2 m_DesiredDrawDamagePos;
 	Vector2 m_CurrentDrawDamagePos;
-	bool m_Locked;
+	LockContext m_LockedBy;
 	bool m_PlayerWon;
 	bool m_PlayerLost;
 
@@ -86,11 +87,11 @@ public:
 
 	void ResetUiState();
 
-	void Lock();
+	void Lock(LockContext lockContext);
 
 	void ReleaseLock();
 
-	bool IsLocked() const;
+	const LockContext GetLockContext() const;
 
 	void SetPlayerWon();
 

@@ -40,7 +40,7 @@ void Ui::SetupDrawDamageAnimation()
 	m_DamageHasModifier = m_SelectedMove->GetMoveType() == m_SelectedTarget->GetWeakness();
 
 	if (m_DamageHasModifier) {
-		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage()) * Constants::DAMAGE_MODIFIER;
+		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage() * Constants::DAMAGE_MODIFIER);
 	}
 	else {
 		m_DamageDrawValue = static_cast<int>(m_SelectedMove->GetDamage());
@@ -137,7 +137,7 @@ Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 	m_DesiredDrawDamagePos = Vector2Zero();
 	m_DamageDrawValue = 0;
 	m_DamageHasModifier = false;
-	m_Locked = false;
+	m_LockedBy = LockContext::NoLocks;
 
 	m_PlayerLost = false;
 	m_PlayerWon = false;
@@ -170,11 +170,13 @@ Vector2 Ui::GetCursorPosition()
 void Ui::Update(Entity* entity) {
 	m_CursorPosition = GetMousePosition();
 
+	std::cout << std::to_string(m_LockedBy) << std::endl;
+
 	if (m_RunningDamageAnimation) {
 		ExecuteDrawDamageAnimation();
 	}
 
-	if (entity != NULL && !m_Locked) {
+	if (entity != NULL && m_LockedBy == LockContext::NoLocks) {
 		Vector2 entityPos = entity->GetPosition();
 		Rectangle rec = entity->GetCurrentAnimation()->GetAnimationRectangle();
 
@@ -197,7 +199,6 @@ void Ui::Update(Entity* entity) {
 		}
 		else {
 			if (entity->GetEntityType() == EntityType::TeamMember && 
-				!entity->HasAttackedThisTurn() &&
 				entity->GetHealthPoints() > 0.0f) {
 				if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 					if (isCursorOn) {
@@ -226,7 +227,7 @@ void Ui::Draw() {
 		DrawEntityInformation(m_SelectedEntity);
 
 		// We can only have a context menu if an entity has been selected.
-		if (m_SelectedEntity->GetEntityType() == EntityType::TeamMember && !m_SelectedEntity->HasAttackedThisTurn()) {
+		if (m_SelectedEntity->GetEntityType() == EntityType::TeamMember) {
 			UpdateContextMenu();
 		}
 	}
@@ -383,19 +384,19 @@ void Ui::ResetUiState()
 	ChangeUiState(ActiveUiState::IDLE);
 }
 
-void Ui::Lock()
+void Ui::Lock(LockContext lockContext)
 {
-	m_Locked = true;
+	m_LockedBy = lockContext;
 }
 
 void Ui::ReleaseLock() 
 {
-	m_Locked = false;
+	m_LockedBy = LockContext::NoLocks;
 }
 
-bool Ui::IsLocked() const
+const LockContext Ui::GetLockContext() const
 {
-	return m_Locked;
+	return m_LockedBy;
 }
 
 void Ui::SetPlayerWon()
