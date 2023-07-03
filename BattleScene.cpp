@@ -2,25 +2,32 @@
 #include <math.h>
 #include "BattleScene.hpp"
 #include <iostream>
+#include <raylib.h>
 
 BattleScene::BattleScene() {
+	m_BackgroundMusicSound = LoadSound("Assets\\Audio\\Songs\\xDeviruchi - Decisive Battle.wav");
+
+	SetSoundVolume(m_BackgroundMusicSound, Constants::SOUND_VOLUME);
+
+	// Play the main battle theme song 
+	PlaySound(m_BackgroundMusicSound);
+	
 	m_Entities.reserve(Constants::MAX_ENTITIES);
 
 	m_BackgroundTexture =
-		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Backgrounds\\battle.png");
+		LoadTexture("Assets\\Images\\Backgrounds\\battle.png");
 
 	Texture2D deathAnimationTextureImage =
-		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Golem\\GolemDeath.png");
+		LoadTexture("Assets\\Images\\Golem\\GolemDeath.png");
 
 	Texture2D idleAnimationTextureImage =
-		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Golem\\GolemIdle.png");
+		LoadTexture("Assets\\Images\\Golem\\GolemIdle.png");
 
 	Texture2D attackAnimationTextureImage =
-		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Golem\\GolemAttack.png");
+		LoadTexture("Assets\\Images\\Golem\\GolemAttack.png");
 
 	Texture2D damageAnimationTextureImage =
-		LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Golem\\GolemDamaged.png");
-
+		LoadTexture("Assets\\Images\\Golem\\GolemDamaged.png");
 
 	Vector2 entityPos = {
 		static_cast<float>((Constants::DEFAULT_WIDTH / 1.5f) - ((deathAnimationTextureImage.width / 4) / 2)),
@@ -48,7 +55,7 @@ BattleScene::BattleScene() {
 	golem->AddMove(golemMove);
 	
 	Texture2D idleTextureDino
-		= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\idle.png");
+		= LoadTexture("Assets\\Images\\Dino\\idle.png");
 
 	Vector2 entityPosDino = {
 		static_cast<float>((Constants::DEFAULT_WIDTH / 3) - ((idleTextureDino.width / 24) / 2)),
@@ -58,12 +65,12 @@ BattleScene::BattleScene() {
 	Animation* idleDinoAnimation = new Animation(entityPosDino, 5, 4, idleTextureDino, AnimationType::Idle);
 
 	Texture2D attackTextureDino
-		= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\attack.png");
+		= LoadTexture("Assets\\Images\\Dino\\attack.png");
 
 	Animation* attackDinoAnimation = new Animation(entityPosDino, 3, 3, attackTextureDino, AnimationType::Attack);
 
 	Texture2D damageTextureDino
-		= LoadTexture("D:\\repos\\AgileBattle\\Assets\\Images\\Dino\\damage.png");
+		= LoadTexture("Assets\\Images\\Dino\\damage.png");
 
 	Animation* damageDinoAnimation = new Animation(entityPosDino, 5, 4, damageTextureDino, AnimationType::Damage);
 
@@ -125,7 +132,11 @@ BattleScene::~BattleScene() {
 		}
 	}
 
+	// Unloading textures
 	UnloadTexture(m_BackgroundTexture);
 	delete m_BattleSystem;
+
+	// Unloading Background Music
+	UnloadSound(m_BackgroundMusicSound);
 }
 

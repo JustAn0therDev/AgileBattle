@@ -16,8 +16,11 @@ private:
 	Entity* m_Attacking;
 	Entity* m_Target;
 	const Move* m_SelectedMove;
+	Sound m_DamageSound;
+	Sound m_BiggerDamageSound;
 public:
 	BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Entity*> teamMembers);
+	~BattleSystem();
 
 	void Update();
 };

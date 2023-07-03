@@ -9,28 +9,36 @@ void TitleScene::Update()
 
 	const Font font = m_Ui.GetFont();
 
-	std::string titleText = "Agile Battle!";
+	const float fontSize = m_Ui.GetFontSize();
+	
+	const float fontSpacing = m_Ui.GetFontSpacing();
 
-	std::string enterToBeginInstructionText = "Pressione enter para iniciar";
+	const char* titleText = "Agile Battle!";
 
-	Vector2 titleTextPos = { (Constants::DEFAULT_WIDTH / 2) - 90, (Constants::DEFAULT_HEIGHT / 2) - 36 };
+	const char* enterToBeginInstructionText = "Pressione enter ou clique na janela do jogo para iniciar!";
+
+	Vector2 titleTextSize = MeasureTextEx(font, titleText, fontSize, fontSpacing);
+
+	Vector2 enterToBeginInstructionTextSize = MeasureTextEx(font, enterToBeginInstructionText, fontSize, fontSpacing);
+
+	Vector2 titleTextPos = { (Constants::DEFAULT_WIDTH / 2) - (titleTextSize.x / 2), (Constants::DEFAULT_HEIGHT / 2) - (titleTextSize.y / 2) };
 
 	Vector2 enterToBeginInstructionTextPos = { 
-	  (Constants::DEFAULT_WIDTH / 2) - 210,
-	  (Constants::DEFAULT_HEIGHT / 2) + 30
+	  (Constants::DEFAULT_WIDTH / 2) - (enterToBeginInstructionTextSize.x / 2),
+	  (Constants::DEFAULT_HEIGHT / 2) + (enterToBeginInstructionTextSize.y / 2)
 	};
 
 	DrawTextEx(font,
-		titleText.c_str(),
+		titleText,
 		titleTextPos,
-		72,
-		2,
+		fontSize,
+		fontSpacing,
 		BLACK);
 
 	DrawTextEx(font,
-		enterToBeginInstructionText.c_str(),
+		enterToBeginInstructionText,
 		enterToBeginInstructionTextPos,
-		72,
-		2,
+		fontSize,
+		fontSpacing,
 		BLACK);
 }

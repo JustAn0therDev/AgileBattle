@@ -14,6 +14,8 @@ int main(void) {
 
 	SetTargetFPS(60);
 
+	InitAudioDevice();
+
 	bool triggredBattleScene = false;
 
 	TitleScene* titleScene = new TitleScene();
@@ -30,7 +32,7 @@ int main(void) {
 
 		ClearBackground(WHITE);
 
-		if (IsKeyPressed(KEY_ENTER) && !triggredBattleScene) {
+		if ((IsKeyPressed(KEY_ENTER) || IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) && !triggredBattleScene) {
 			battleScene = new BattleScene();
 			triggredBattleScene = true;
 			delete titleScene;
@@ -50,6 +52,8 @@ int main(void) {
 	if (battleScene != NULL) {
 		delete battleScene;
 	}
+	
+	CloseAudioDevice();
 
 	CloseWindow();
 

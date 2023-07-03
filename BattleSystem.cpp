@@ -10,6 +10,18 @@ BattleSystem::BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Ent
 	m_TeamMembers = teamMembers;
 	m_Enemies = enemies;
 	m_LastTime = GetTime();
+
+	m_DamageSound = LoadSound("Assets\\Audio\\Sound Effects\\Damage Sound Effect.wav");
+	m_BiggerDamageSound = LoadSound("Assets\\Audio\\Sound Effects\\Impact Sound Effect.wav");
+
+	SetSoundVolume(m_DamageSound, Constants::SOUND_VOLUME);
+	SetSoundVolume(m_BiggerDamageSound, Constants::SOUND_VOLUME);
+}
+
+BattleSystem::~BattleSystem()
+{
+	UnloadSound(m_DamageSound);
+	UnloadSound(m_BiggerDamageSound);
 }
 
 void BattleSystem::Update() {
@@ -26,6 +38,10 @@ void BattleSystem::Update() {
 
 		if (move->GetMoveType() == target->GetWeakness()) {
 			modifier *= Constants::DAMAGE_MODIFIER; // weakness takes damage * modifier
+			PlaySound(m_BiggerDamageSound);
+		}
+		else {
+			PlaySound(m_DamageSound);
 		}
 
 		target->RemoveHealth(move->GetDamage() * modifier);
@@ -93,6 +109,8 @@ void BattleSystem::Update() {
 
 				target->PlayAnimation(AnimationType::Attack);
 				teamMemberTarget->PlayAnimation(AnimationType::Damage);
+
+				PlaySound(m_DamageSound);
 
 				m_Ui->Lock(LockContext::EnemyAttack);
 

@@ -34,6 +34,7 @@ private:
 	LockContext m_LockedBy;
 	bool m_PlayerWon;
 	bool m_PlayerLost;
+	Sound m_BlinkSound;
 
 	void UpdateContextMenu();
 	void ExecuteDrawDamageAnimation();
@@ -41,6 +42,8 @@ private:
 	void DrawLoseText() const;
 public:
 	Ui();
+
+	~Ui();
 
 	const Font& GetFont();
 
@@ -96,4 +99,8 @@ public:
 	void SetPlayerWon();
 
 	void SetPlayerLost();
+
+	const float GetFontSize() const;
+
+	const float GetFontSpacing() const;
 };

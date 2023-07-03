@@ -4,7 +4,6 @@
 #include <string>
 #include <raymath.h>
 #include <vector>
-#include <iostream>
 
 void Ui::ExecuteDrawDamageAnimation()
 {
@@ -88,6 +87,7 @@ void Ui::UpdateContextMenu()
 				if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
 					m_SelectedMove = move;
 					m_ActiveUiState = ActiveUiState::SELECTING_TARGET;
+					PlaySound(m_BlinkSound);
 				}
 			}
 			else {
@@ -141,6 +141,9 @@ Ui::Ui() : m_CursorPosition({ 0.0f, 0.0f })
 
 	m_PlayerLost = false;
 	m_PlayerWon = false;
+
+	m_BlinkSound = LoadSound("Assets\\Audio\\Sound Effects\\Blink Sound Effect.wav");
+	SetSoundVolume(m_BlinkSound, Constants::SOUND_VOLUME);
 }
 
 const Font& Ui::GetFont() {
@@ -170,8 +173,6 @@ Vector2 Ui::GetCursorPosition()
 void Ui::Update(Entity* entity) {
 	m_CursorPosition = GetMousePosition();
 
-	std::cout << std::to_string(m_LockedBy) << std::endl;
-
 	if (m_RunningDamageAnimation) {
 		ExecuteDrawDamageAnimation();
 	}
@@ -195,6 +196,7 @@ void Ui::Update(Entity* entity) {
 			if (isCursorOn && entity->GetEntityType() == EntityType::Enemy && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 				m_SelectedTarget = entity;
 				SetupDrawDamageAnimation();
+				PlaySound(m_BlinkSound);
 			}
 		}
 		else {
@@ -204,6 +206,7 @@ void Ui::Update(Entity* entity) {
 					if (isCursorOn) {
 						m_SelectedEntity = entity;
 						m_ActiveUiState = ActiveUiState::MOVE;
+						PlaySound(m_BlinkSound);
 					}
 					else if (!isCursorOn && entity == m_SelectedEntity && !isCursorOnMenu) {
 						m_SelectedEntity = NULL;
@@ -407,6 +410,23 @@ void Ui::SetPlayerWon()
 void Ui::SetPlayerLost()
 {
 	m_PlayerLost = true;
+}
+
+const float Ui::GetFontSize() const
+{
+	return m_DefaultFontSize;
+}
+
+const float Ui::GetFontSpacing() const
+{
+	return m_DefaultFontSpacing;
+}
+
+Ui::~Ui()
+{
+	UnloadSound(m_BlinkSound);
+
+	UnloadFont(m_Font);
 }
 
 void Ui::DrawWinText() const

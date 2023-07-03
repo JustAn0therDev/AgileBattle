@@ -9,6 +9,7 @@ private:
 	Ui m_Ui;
 	Texture2D m_BackgroundTexture;
 	BattleSystem* m_BattleSystem;
+	Sound m_BackgroundMusicSound;
 public:
 	BattleScene();
 	void Update();
