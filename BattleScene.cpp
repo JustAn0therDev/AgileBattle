@@ -50,7 +50,7 @@ BattleScene::BattleScene() {
 		damageAnimation,
 		MoveType::FrontEnd);
 
-	Move* golemMove = new Move(10.0f, 10.0f, "COMPLEXIDADE DE RESOLUÇÃO", "Cansa o membro do time durante a resolução da tarefa.", MoveType::None);
+	Move* golemMove = new Move(10.0f, 10.0f, "COMPLEXIDADE DE RESOLUÇÃO", "Cansa o membro do time durante a resolução da tarefa.", MoveType::Task);
 
 	golem->AddMove(golemMove);
 	
@@ -84,7 +84,7 @@ BattleScene::BattleScene() {
 		NULL,
 		attackDinoFrontEndAnimation,
 		damageDinoFrontEndAnimation,
-		MoveType::ProductOwner);
+		MoveType::None);
 
 	Move* moveFrontEnd = new Move(10.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.", MoveType::FrontEnd);
 	Move* moveFrontEnd2 = new Move(10.0f, 10.0f, "Resolver", "Resolve tarefa sem habilidade especifica", MoveType::None);
@@ -119,9 +119,9 @@ BattleScene::BattleScene() {
 		NULL,
 		attackDinoSMAnimation,
 		damageDinoSMAnimation,
-		MoveType::ProductOwner);
+		MoveType::None);
 
-	Move* moveSM = new Move(10.0f, 10.0f, "Corrigir Sprint", "Corrige problemas na sprint (REVISAR).", MoveType::ScrumMaster);
+	Move* moveSM = new Move(10.0f, 10.0f, "Corrigir Sprint", "Corrige problemas na sprint.", MoveType::ScrumMaster);
 
 	dinoSM->AddMove(moveSM);
 

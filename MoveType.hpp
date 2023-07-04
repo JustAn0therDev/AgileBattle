@@ -4,5 +4,6 @@ enum MoveType {
 	FrontEnd,
 	BackEnd,
 	ScrumMaster,
-	ProductOwner
+	ProductOwner,
+	Task
 };
