@@ -54,48 +54,84 @@ BattleScene::BattleScene() {
 
 	golem->AddMove(golemMove);
 	
-	Texture2D idleTextureDino
-		= LoadTexture("Assets\\Images\\Dino\\idle.png");
+	// Setting Front-end
+	Texture2D idleTextureDinoFrontEnd
+		= LoadTexture("Assets\\Images\\Dino - Front\\idle.png");
 
 	Vector2 entityPosDino = {
-		static_cast<float>((Constants::DEFAULT_WIDTH / 3) - ((idleTextureDino.width / 24) / 2)),
-		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - idleTextureDino.height / 2)
+		static_cast<float>((Constants::DEFAULT_WIDTH / 3) - ((idleTextureDinoFrontEnd.width / 24) / 2)),
+		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - idleTextureDinoFrontEnd.height / 2)
 	};
 
-	Animation* idleDinoAnimation = new Animation(entityPosDino, 5, 4, idleTextureDino, AnimationType::Idle);
+	Animation* idleDinoFrontEndAnimation = new Animation(entityPosDino, 5, 4, idleTextureDinoFrontEnd, AnimationType::Idle);
 
-	Texture2D attackTextureDino
-		= LoadTexture("Assets\\Images\\Dino\\attack.png");
+	Texture2D attackTextureDinoFrontEnd
+		= LoadTexture("Assets\\Images\\Dino - Front\\attack.png");
 
-	Animation* attackDinoAnimation = new Animation(entityPosDino, 3, 3, attackTextureDino, AnimationType::Attack);
+	Animation* attackDinoFrontEndAnimation = new Animation(entityPosDino, 3, 3, attackTextureDinoFrontEnd, AnimationType::Attack);
 
-	Texture2D damageTextureDino
-		= LoadTexture("Assets\\Images\\Dino\\damage.png");
+	Texture2D damageTextureDinoFrontEnd
+		= LoadTexture("Assets\\Images\\Dino - Front\\damage.png");
 
-	Animation* damageDinoAnimation = new Animation(entityPosDino, 5, 4, damageTextureDino, AnimationType::Damage);
+	Animation* damageDinoFrontEndAnimation = new Animation(entityPosDino, 5, 4, damageTextureDinoFrontEnd, AnimationType::Damage);
 
-	Entity* dino = new Entity(
+	Entity* dinoFrontEnd = new Entity(
 		"Front-end",
 		EntityType::TeamMember,
 		100.0f,
 		entityPosDino,
-		idleDinoAnimation,
+		idleDinoFrontEndAnimation,
 		NULL,
-		attackDinoAnimation,
-		damageDinoAnimation,
+		attackDinoFrontEndAnimation,
+		damageDinoFrontEndAnimation,
 		MoveType::ProductOwner);
 
-	Move* move = new Move(10.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.", MoveType::FrontEnd);
-	Move* move2 = new Move(10.0f, 10.0f, "Resolver", "Resolve tarefa sem habilidade especifica", MoveType::None);
+	Move* moveFrontEnd = new Move(10.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.", MoveType::FrontEnd);
+	Move* moveFrontEnd2 = new Move(10.0f, 10.0f, "Resolver", "Resolve tarefa sem habilidade especifica", MoveType::None);
 	
-	dino->AddMove(move);
-	dino->AddMove(move2);
+	dinoFrontEnd->AddMove(moveFrontEnd);
+	dinoFrontEnd->AddMove(moveFrontEnd2);
 
-	m_Entities.emplace_back(dino);
+	// Setting Scrum Master
+	Texture2D idleTextureDinoSM
+		= LoadTexture("Assets\\Images\\Dino - SM\\idle.png");
+
+	entityPosDino.y += 100.0f;
+
+	Animation* idleDinoSMAnimation = new Animation(entityPosDino, 5, 4, idleTextureDinoSM, AnimationType::Idle);
+
+	Texture2D attackTextureDinoSM
+		= LoadTexture("Assets\\Images\\Dino - SM\\attack.png");
+
+	Animation* attackDinoSMAnimation = new Animation(entityPosDino, 3, 3, attackTextureDinoSM, AnimationType::Attack);
+
+	Texture2D damageTextureDinoSM
+		= LoadTexture("Assets\\Images\\Dino - SM\\damage.png");
+
+	Animation* damageDinoSMAnimation = new Animation(entityPosDino, 5, 3, damageTextureDinoSM, AnimationType::Damage);
+
+	Entity* dinoSM = new Entity(
+		"Scrum Master",
+		EntityType::TeamMember,
+		100.0f,
+		entityPosDino,
+		idleDinoSMAnimation,
+		NULL,
+		attackDinoSMAnimation,
+		damageDinoSMAnimation,
+		MoveType::ProductOwner);
+
+	Move* moveSM = new Move(10.0f, 10.0f, "Corrigir Sprint", "Corrige problemas na sprint (REVISAR).", MoveType::ScrumMaster);
+
+	dinoSM->AddMove(moveSM);
+
+	m_Entities.emplace_back(dinoFrontEnd);
+	m_Entities.emplace_back(dinoSM);
 	m_Entities.emplace_back(golem);
 
 	std::vector<Entity*> teamMembers;
-	teamMembers.push_back(dino);
+	teamMembers.push_back(dinoFrontEnd);
+	teamMembers.push_back(dinoSM);
 
 	std::vector<Entity*> enemies;
 	enemies.push_back(golem);
