@@ -222,6 +222,12 @@ void Ui::Update(Entity* entity) {
 }
 
 void Ui::Draw() {
+	// If we have the menu in the IDLE state, we should show a message
+	// to the player, indicating that they can act!
+	if (m_ActiveUiState == ActiveUiState::IDLE) {
+		DrawTextEx(m_Font, "Selecione um membro do time para agir!", m_MoveTextPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+	}
+
 	// We know that entities have health;
 	// so all entities should have their health drawn on screen.
 	// But their health should be managed by the battle system, not by the UI.
