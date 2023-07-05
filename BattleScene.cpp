@@ -9,51 +9,18 @@ BattleScene::BattleScene() {
 
 	SetSoundVolume(m_BackgroundMusicSound, Constants::SOUND_VOLUME);
 
-	// Play the main battle theme song 
+	// Play the main battle theme song
 	PlaySound(m_BackgroundMusicSound);
 	
+	// Reserve the max space for the entities list of the game
 	m_Entities.reserve(Constants::MAX_ENTITIES);
 
+	// Set background
 	m_BackgroundTexture =
 		LoadTexture("Assets\\Images\\Backgrounds\\battle.png");
-
-	Texture2D deathAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem\\GolemDeath.png");
-
-	Texture2D idleAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem\\GolemIdle.png");
-
-	Texture2D attackAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem\\GolemAttack.png");
-
-	Texture2D damageAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem\\GolemDamaged.png");
-
-	Vector2 entityPos = {
-		static_cast<float>((Constants::DEFAULT_WIDTH / 1.5f) - ((deathAnimationTextureImage.width / 4) / 2)),
-		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - deathAnimationTextureImage.height / 2)
-	};
-
-	Animation* deathAnimation = new Animation(entityPos, 5, 8, deathAnimationTextureImage, AnimationType::Death);
-	Animation* idleAnimation = new Animation(entityPos, 5, 5, idleAnimationTextureImage, AnimationType::Idle);
-	Animation* damageAnimation = new Animation(entityPos, 5, 8, damageAnimationTextureImage, AnimationType::Damage);
-	Animation* attackAnimation = new Animation(entityPos, 5, 6, attackAnimationTextureImage, AnimationType::Attack);
-
-	Entity* golem = new Entity(
-		"Tarefa: Desenv. Interface",
-		EntityType::Enemy,
-		100.0f,
-		entityPos,
-		idleAnimation,
-		deathAnimation,
-		attackAnimation,
-		damageAnimation,
-		MoveType::FrontEnd);
-
-	Move* golemMove = new Move(10.0f, 10.0f, "COMPLEXIDADE DE RESOLUÇÃO", "Cansa o membro do time durante a resolução da tarefa.", MoveType::Task);
-
-	golem->AddMove(golemMove);
 	
+	// Set all team members:
+
 	// Setting Front-end
 	Texture2D idleTextureDinoFrontEnd
 		= LoadTexture("Assets\\Images\\Dino - Front\\idle.png");
@@ -186,22 +153,63 @@ BattleScene::BattleScene() {
 
 	dinoPO->AddMove(movePO);
 
+	// Now setting the enemies
+	Texture2D deathAnimationTextureImage =
+		LoadTexture("Assets\\Images\\Golem - Interface\\GolemDeath.png");
+
+	Texture2D idleAnimationTextureImage =
+		LoadTexture("Assets\\Images\\Golem - Interface\\idle.png");
+
+	Texture2D attackAnimationTextureImage =
+		LoadTexture("Assets\\Images\\Golem - Interface\\GolemAttack.png");
+
+	Texture2D damageAnimationTextureImage =
+		LoadTexture("Assets\\Images\\Golem - Interface\\GolemDamaged.png");
+
+	Vector2 entityPos = {
+		static_cast<float>((Constants::DEFAULT_WIDTH / 1.5f) - ((deathAnimationTextureImage.width / 4) / 2)),
+		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - deathAnimationTextureImage.height / 2)
+	};
+
+	Animation* deathAnimation = new Animation(entityPos, 5, 8, deathAnimationTextureImage, AnimationType::Death);
+	Animation* idleAnimation = new Animation(entityPos, 8, 8, idleAnimationTextureImage, AnimationType::Idle);
+	Animation* damageAnimation = new Animation(entityPos, 5, 8, damageAnimationTextureImage, AnimationType::Damage);
+	Animation* attackAnimation = new Animation(entityPos, 5, 6, attackAnimationTextureImage, AnimationType::Attack);
+
+	Entity* golemInterface = new Entity(
+		"Tarefa: Desenv. Interface",
+		EntityType::Enemy,
+		100.0f,
+		entityPos,
+		idleAnimation,
+		deathAnimation,
+		attackAnimation,
+		damageAnimation,
+		MoveType::FrontEnd);
+
+	Move* golemMove = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+
+	golemInterface->AddMove(golemMove);
+
 	// Finishing the entity list
 
 	m_Entities.emplace_back(dinoFrontEnd);
 	m_Entities.emplace_back(dinoSM);
 	m_Entities.emplace_back(dinoBackEnd);
 	m_Entities.emplace_back(dinoPO);
-	m_Entities.emplace_back(golem);
+	m_Entities.emplace_back(golemInterface);
 
+	// Setting who are the team members
 	std::vector<Entity*> teamMembers;
 	teamMembers.push_back(dinoFrontEnd);
 	teamMembers.push_back(dinoSM);
 	teamMembers.push_back(dinoBackEnd);
 	teamMembers.push_back(dinoPO);
 
+	// And their enemies, since the battle system
+	// must be capable of differentiating between them.
 	std::vector<Entity*> enemies;
-	enemies.push_back(golem);
+	enemies.push_back(golemInterface);
 
 	m_BattleSystem = new BattleSystem(&m_Ui, enemies, teamMembers);
 }

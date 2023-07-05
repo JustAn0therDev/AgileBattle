@@ -22,7 +22,7 @@ public:
 		Texture2D textureImage,
 		AnimationType animationType);
 
-	void Update();
+	void Update(Color color);
 	Rectangle GetAnimationRectangle() const;
 
 	bool PlayedAnimationOnce() const;

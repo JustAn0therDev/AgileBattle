@@ -22,7 +22,7 @@ Animation::Animation(
 	m_AnimationType = animationType;
 }
 
-void Animation::Update() {
+void Animation::Update(Color color) {
 	m_FrameCounter++;
 
 	if (m_FrameCounter >= (60 / m_FrameSpeed)) {
@@ -48,7 +48,7 @@ void Animation::Update() {
 		static_cast<float>(m_TextureImage.width / m_FrameCount),
 		static_cast<float>(m_TextureImage.height) };
 
-	DrawTextureRec(m_TextureImage, m_FrameRectangle, m_Position, WHITE);
+	DrawTextureRec(m_TextureImage, m_FrameRectangle, m_Position, color);
 }
 
 Rectangle Animation::GetAnimationRectangle() const

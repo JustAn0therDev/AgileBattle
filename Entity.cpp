@@ -97,7 +97,7 @@ const Animation* Entity::GetCurrentAnimation() const {
 
 void Entity::Update() {
 	if (m_CurrentAnimation != NULL) {
-		m_CurrentAnimation->Update();
+		m_CurrentAnimation->Update(GetHealthPoints() > 0 ? WHITE : GRAY);
 
 		if (m_CurrentAnimation->GetAnimationType() != AnimationType::Idle &&
 			m_CurrentAnimation->PlayedAnimationOnce()) {

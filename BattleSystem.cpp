@@ -89,10 +89,17 @@ void BattleSystem::Update() {
 		m_Ui->GetLockContext() == LockContext::PlayerAttack) {
 		// Process enemy attacks
 		if (target->GetHealthPoints() > 0) {
-			size_t rndIndex =
-				static_cast<size_t>(GetRandomValue(0, static_cast<int>(m_TeamMembers.size() - 1)));
+			Entity* teamMemberTarget = NULL;
 
-			Entity* teamMemberTarget = m_TeamMembers[rndIndex];
+			// TODO: refactor
+			while (teamMemberTarget == NULL) {
+				size_t rndIndex =
+					static_cast<size_t>(GetRandomValue(0, static_cast<int>(m_TeamMembers.size() - 1)));
+
+				if (m_TeamMembers[rndIndex]->GetHealthPoints() > 0) {
+					teamMemberTarget = m_TeamMembers[rndIndex];
+				}
+			}
 
 			if (teamMemberTarget != NULL) {
 				Move* enemyMove = target->GetMoves()[0];
