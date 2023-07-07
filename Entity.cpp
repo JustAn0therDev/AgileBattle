@@ -70,6 +70,11 @@ const EntityType& Entity::GetEntityType() const {
 }
 
 void Entity::PlayAnimation(AnimationType animationType) {
+	// The animation that is currently playing should have its
+	// state reset so that, when played again,
+	// it should always start at the first frame.
+	m_CurrentAnimation->ResetState();
+
 	switch (animationType)
 	{
 	case Idle:
@@ -85,10 +90,6 @@ void Entity::PlayAnimation(AnimationType animationType) {
 		m_CurrentAnimation = m_DeathAnimation;
 		break;
 	}
-
-	// This is not checked in the idle animation set.
-	// Outside of it, any animation is only played once.
-	m_CurrentAnimation->SetPlayedAnimationOnce(false);
 }
 
 const Animation* Entity::GetCurrentAnimation() const {
@@ -97,12 +98,12 @@ const Animation* Entity::GetCurrentAnimation() const {
 
 void Entity::Update() {
 	if (m_CurrentAnimation != NULL) {
-		m_CurrentAnimation->Update(GetHealthPoints() > 0 ? WHITE : GRAY);
-
 		if (m_CurrentAnimation->GetAnimationType() != AnimationType::Idle &&
 			m_CurrentAnimation->PlayedAnimationOnce()) {
 			PlayAnimation(AnimationType::Idle);
 		}
+
+		m_CurrentAnimation->Update(GetHealthPoints() > 0 ? WHITE : GRAY);
 	}
 }
 

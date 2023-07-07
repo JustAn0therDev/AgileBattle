@@ -11,7 +11,7 @@ BattleScene::BattleScene() {
 
 	// Play the main battle theme song
 	PlaySound(m_BackgroundMusicSound);
-	
+
 	// Reserve the max space for the entities list of the game
 	m_Entities.reserve(Constants::MAX_ENTITIES);
 
@@ -153,43 +153,48 @@ BattleScene::BattleScene() {
 
 	dinoPO->AddMove(movePO);
 
-	// Now setting the enemies
-	Texture2D deathAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem - Interface\\GolemDeath.png");
+	// And now, set all enemies:
 
-	Texture2D idleAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem - Interface\\idle.png");
+	// Interface
+	Texture2D idleTextureTaskInterface =
+		LoadTexture("Assets\\Images\\Task - Interface\\idle.png");
 
-	Texture2D attackAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem - Interface\\GolemAttack.png");
+	Texture2D attackTextureTaskInterface =
+		LoadTexture("Assets\\Images\\Task - Interface\\attack.png");
 
-	Texture2D damageAnimationTextureImage =
-		LoadTexture("Assets\\Images\\Golem - Interface\\GolemDamaged.png");
+	// TODO: This damage animation has to be fixed later.
+	Image damageImageTaskInterface =
+		LoadImage("Assets\\Images\\Task - Interface\\damage.png");
+
+	ImageFlipHorizontal(&damageImageTaskInterface);
+
+	Texture2D damageTextureTaskInterface = LoadTextureFromImage(damageImageTaskInterface);
+
+	UnloadImage(damageImageTaskInterface);
 
 	Vector2 entityPos = {
-		static_cast<float>((Constants::DEFAULT_WIDTH / 1.5f) - ((deathAnimationTextureImage.width / 4) / 2)),
-		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - deathAnimationTextureImage.height / 2)
+		static_cast<float>((Constants::DEFAULT_WIDTH / 1.5f) - ((idleTextureTaskInterface.width / 4) / 2)),
+		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - idleTextureTaskInterface.height / 2)
 	};
 
-	Animation* deathAnimation = new Animation(entityPos, 5, 8, deathAnimationTextureImage, AnimationType::Death);
-	Animation* idleAnimation = new Animation(entityPos, 8, 8, idleAnimationTextureImage, AnimationType::Idle);
-	Animation* damageAnimation = new Animation(entityPos, 5, 8, damageAnimationTextureImage, AnimationType::Damage);
-	Animation* attackAnimation = new Animation(entityPos, 5, 6, attackAnimationTextureImage, AnimationType::Attack);
+	Animation* idleAnimationTaskInterface = new Animation(entityPos, 2, 2, idleTextureTaskInterface, AnimationType::Idle);
+	Animation* damageAnimationTaskInterface = new Animation(entityPos, 3, 4, damageTextureTaskInterface, AnimationType::Damage);
+	Animation* attackAnimationTaskInterface = new Animation(entityPos, 5, 8, attackTextureTaskInterface, AnimationType::Attack);
 
-	Entity* golemInterface = new Entity(
+	Entity* taskInterface = new Entity(
 		"Tarefa: Desenv. Interface",
 		EntityType::Enemy,
 		100.0f,
 		entityPos,
-		idleAnimation,
-		deathAnimation,
-		attackAnimation,
-		damageAnimation,
+		idleAnimationTaskInterface,
+		NULL,
+		attackAnimationTaskInterface,
+		damageAnimationTaskInterface,
 		MoveType::FrontEnd);
 
-	Move* golemMove = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+	Move* taskMove = new Move(10.0f, 10.0f, "", "", MoveType::Task);
 
-	golemInterface->AddMove(golemMove);
+	taskInterface->AddMove(taskMove);
 
 	// Finishing the entity list
 
@@ -197,7 +202,7 @@ BattleScene::BattleScene() {
 	m_Entities.emplace_back(dinoSM);
 	m_Entities.emplace_back(dinoBackEnd);
 	m_Entities.emplace_back(dinoPO);
-	m_Entities.emplace_back(golemInterface);
+	m_Entities.emplace_back(taskInterface);
 
 	// Setting who are the team members
 	std::vector<Entity*> teamMembers;
@@ -209,12 +214,18 @@ BattleScene::BattleScene() {
 	// And their enemies, since the battle system
 	// must be capable of differentiating between them.
 	std::vector<Entity*> enemies;
-	enemies.push_back(golemInterface);
+	enemies.push_back(taskInterface);
 
 	m_BattleSystem = new BattleSystem(&m_Ui, enemies, teamMembers);
 }
 
 void BattleScene::Update() {
+	// Making sure that the background music is always being played
+	// on repeat.
+	if (!IsSoundPlaying(m_BackgroundMusicSound)) {
+		PlaySound(m_BackgroundMusicSound);
+	}
+	
 	DrawTextureEx(m_BackgroundTexture,
 		{ static_cast<float>((Constants::DEFAULT_WIDTH / 2) - (m_BackgroundTexture.width / 2)),
 		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - (m_BackgroundTexture.height / 2)) },

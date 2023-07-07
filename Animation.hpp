@@ -26,8 +26,8 @@ public:
 	Rectangle GetAnimationRectangle() const;
 
 	bool PlayedAnimationOnce() const;
-	void SetPlayedAnimationOnce(bool value);
 	AnimationType GetAnimationType() const;
+	void ResetState();
 
 	~Animation();
 };

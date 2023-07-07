@@ -8,7 +8,7 @@ Animation::Animation(
 	AnimationType animationType) {
 	m_FrameSpeed = frameSpeed;
 	m_FrameCount = frameCount;
-	m_CurrentFrame = 1;
+	m_CurrentFrame = 0;
 	m_FrameCounter = 0;
 	m_TextureImage = textureImage;
 	m_FrameRectangle = {
@@ -28,12 +28,12 @@ void Animation::Update(Color color) {
 	if (m_FrameCounter >= (60 / m_FrameSpeed)) {
 		m_FrameCounter = 0;
 
-		if (m_CurrentFrame > m_FrameCount) {
+		if (m_CurrentFrame > m_FrameCount - 1) {
 			if (m_AnimationType != AnimationType::Idle) {
 				m_PlayedAnimationOnce = true;
 			}
 
-			m_CurrentFrame = 1;
+			m_CurrentFrame = 0;
 		}
 		else {
 			m_CurrentFrame++;
@@ -41,12 +41,6 @@ void Animation::Update(Color color) {
 
 		m_FrameRectangle.x = static_cast<float>(m_CurrentFrame) * static_cast<float>(m_TextureImage.width / m_FrameCount);
 	}
-
-	Rectangle rec = {
-		0.0f,
-		0.0f,
-		static_cast<float>(m_TextureImage.width / m_FrameCount),
-		static_cast<float>(m_TextureImage.height) };
 
 	DrawTextureRec(m_TextureImage, m_FrameRectangle, m_Position, color);
 }
@@ -60,12 +54,16 @@ bool Animation::PlayedAnimationOnce() const {
 	return m_PlayedAnimationOnce;
 }
 
-void Animation::SetPlayedAnimationOnce(bool value) {
-	m_PlayedAnimationOnce = value;
-}
-
 AnimationType Animation::GetAnimationType() const {
 	return m_AnimationType;
+}
+
+void Animation::ResetState()
+{
+	m_CurrentFrame = 0;
+	m_FrameRectangle.x = 0;
+	m_FrameCounter = 0;
+	m_PlayedAnimationOnce = false;
 }
 
 Animation::~Animation() {
