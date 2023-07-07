@@ -25,7 +25,7 @@ BattleScene::BattleScene() {
 	Texture2D idleTextureDinoFrontEnd
 		= LoadTexture("Assets\\Images\\Dino - Front\\idle.png");
 
-	Vector2 entityPosDino = { 200.0f, 225.0f }; // testing
+	Vector2 entityPosDino = { 200.0f, 225.0f };
 
 	Animation* idleDinoFrontEndAnimation = new Animation(entityPosDino, 5, 4, idleTextureDinoFrontEnd, AnimationType::Idle);
 
@@ -162,30 +162,19 @@ BattleScene::BattleScene() {
 	Texture2D attackTextureTaskInterface =
 		LoadTexture("Assets\\Images\\Task - Interface\\attack.png");
 
-	// TODO: This damage animation has to be fixed later.
-	Image damageImageTaskInterface =
-		LoadImage("Assets\\Images\\Task - Interface\\damage.png");
+	Texture2D damageTextureTaskInterface = LoadTexture("Assets\\Images\\Task - Interface\\damage.png");
 
-	ImageFlipHorizontal(&damageImageTaskInterface);
+	Vector2 entityPosTask = { 900.0f, 225.0f };
 
-	Texture2D damageTextureTaskInterface = LoadTextureFromImage(damageImageTaskInterface);
-
-	UnloadImage(damageImageTaskInterface);
-
-	Vector2 entityPos = {
-		static_cast<float>((Constants::DEFAULT_WIDTH / 1.5f) - ((idleTextureTaskInterface.width / 4) / 2)),
-		static_cast<float>((Constants::DEFAULT_HEIGHT / 2) - idleTextureTaskInterface.height / 2)
-	};
-
-	Animation* idleAnimationTaskInterface = new Animation(entityPos, 2, 2, idleTextureTaskInterface, AnimationType::Idle);
-	Animation* damageAnimationTaskInterface = new Animation(entityPos, 3, 4, damageTextureTaskInterface, AnimationType::Damage);
-	Animation* attackAnimationTaskInterface = new Animation(entityPos, 5, 8, attackTextureTaskInterface, AnimationType::Attack);
+	Animation* idleAnimationTaskInterface = new Animation(entityPosTask, 2, 2, idleTextureTaskInterface, AnimationType::Idle);
+	Animation* damageAnimationTaskInterface = new Animation(entityPosTask, 3, 4, damageTextureTaskInterface, AnimationType::Damage);
+	Animation* attackAnimationTaskInterface = new Animation(entityPosTask, 5, 8, attackTextureTaskInterface, AnimationType::Attack);
 
 	Entity* taskInterface = new Entity(
 		"Tarefa: Desenv. Interface",
 		EntityType::Enemy,
 		100.0f,
-		entityPos,
+		entityPosTask,
 		idleAnimationTaskInterface,
 		NULL,
 		attackAnimationTaskInterface,
@@ -196,6 +185,36 @@ BattleScene::BattleScene() {
 
 	taskInterface->AddMove(taskMove);
 
+	// Sprint Issues
+	Texture2D idleTextureTaskSprintIssues =
+		LoadTexture("Assets\\Images\\Task - Sprint Issues\\idle.png");
+
+	Texture2D attackTextureTaskSprintIssues =
+		LoadTexture("Assets\\Images\\Task - Sprint Issues\\attack.png");
+
+	Texture2D damageTextureTaskSprintIssues = LoadTexture("Assets\\Images\\Task - Sprint Issues\\damage.png");
+
+	entityPosTask.y += 100.0f;
+
+	Animation* idleAnimationTaskSprintIssues = new Animation(entityPosTask, 2, 2, idleTextureTaskSprintIssues, AnimationType::Idle);
+	Animation* damageAnimationTaskSprintIssues = new Animation(entityPosTask, 3, 4, damageTextureTaskSprintIssues, AnimationType::Damage);
+	Animation* attackAnimationTaskSprintIssues = new Animation(entityPosTask, 5, 8, attackTextureTaskSprintIssues, AnimationType::Attack);
+
+	Entity* taskSprintIssues = new Entity(
+		"Problemas na Sprint",
+		EntityType::Enemy,
+		100.0f,
+		entityPosTask,
+		idleAnimationTaskSprintIssues,
+		NULL,
+		attackAnimationTaskSprintIssues,
+		damageAnimationTaskSprintIssues,
+		MoveType::ScrumMaster);
+
+	Move* taskMoveSprintIssues = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+
+	taskSprintIssues->AddMove(taskMoveSprintIssues);
+
 	// Finishing the entity list
 
 	m_Entities.emplace_back(dinoFrontEnd);
@@ -203,6 +222,7 @@ BattleScene::BattleScene() {
 	m_Entities.emplace_back(dinoBackEnd);
 	m_Entities.emplace_back(dinoPO);
 	m_Entities.emplace_back(taskInterface);
+	m_Entities.emplace_back(taskSprintIssues);
 
 	// Setting who are the team members
 	std::vector<Entity*> teamMembers;
@@ -215,6 +235,7 @@ BattleScene::BattleScene() {
 	// must be capable of differentiating between them.
 	std::vector<Entity*> enemies;
 	enemies.push_back(taskInterface);
+	enemies.push_back(taskSprintIssues);
 
 	m_BattleSystem = new BattleSystem(&m_Ui, enemies, teamMembers);
 }
