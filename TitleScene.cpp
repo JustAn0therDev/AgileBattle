@@ -15,7 +15,7 @@ void TitleScene::Update()
 
 	const char* titleText = "Agile Battle!";
 
-	const char* enterToBeginInstructionText = "Pressione enter ou clique na janela do jogo para iniciar!";
+	const char* enterToBeginInstructionText = "Pressione enter ou clique para iniciar!";
 
 	Vector2 titleTextSize = MeasureTextEx(font, titleText, fontSize, fontSpacing);
 

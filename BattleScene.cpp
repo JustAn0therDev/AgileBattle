@@ -50,7 +50,7 @@ BattleScene::BattleScene() {
 		damageDinoFrontEndAnimation,
 		MoveType::None);
 
-	Move* moveFrontEnd = new Move(10.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.", MoveType::FrontEnd);
+	Move* moveFrontEnd = new Move(5.0f, 10.0f, "Resolver - Front", "Resolve tarefa com habilidades de front-end.", MoveType::FrontEnd);
 	
 	dinoFrontEnd->AddMove(moveFrontEnd);
 
@@ -83,7 +83,7 @@ BattleScene::BattleScene() {
 		damageDinoSMAnimation,
 		MoveType::None);
 
-	Move* moveSM = new Move(10.0f, 10.0f, "Corrigir Sprint", "Corrige problemas na sprint.", MoveType::ScrumMaster);
+	Move* moveSM = new Move(5.0f, 10.0f, "Corrigir Sprint", "Corrige problemas na sprint.", MoveType::ScrumMaster);
 
 	dinoSM->AddMove(moveSM);
 
@@ -116,7 +116,7 @@ BattleScene::BattleScene() {
 		damageDinoBackAnimation,
 		MoveType::None);
 
-	Move* moveBack = new Move(10.0f, 10.0f, "Resolver - Back", "Resolve tarefa com habilidades de back-end.", MoveType::BackEnd);
+	Move* moveBack = new Move(5.0f, 10.0f, "Resolver - Back", "Resolve tarefa com habilidades de back-end.", MoveType::BackEnd);
 
 	dinoBackEnd->AddMove(moveBack);
 
@@ -149,7 +149,7 @@ BattleScene::BattleScene() {
 		damageDinoPOAnimation,
 		MoveType::None);
 
-	Move* movePO = new Move(10.0f, 10.0f, "Priorizar Backlog", "Prioriza os itens no backlog.", MoveType::ProductOwner);
+	Move* movePO = new Move(5.0f, 10.0f, "Priorizar Backlog", "Prioriza os itens no backlog.", MoveType::ProductOwner);
 
 	dinoPO->AddMove(movePO);
 
@@ -181,7 +181,7 @@ BattleScene::BattleScene() {
 		damageAnimationTaskInterface,
 		MoveType::FrontEnd);
 
-	Move* taskMove = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+	Move* taskMove = new Move(15.0f, 10.0f, "", "", MoveType::Task);
 
 	taskInterface->AddMove(taskMove);
 
@@ -211,7 +211,7 @@ BattleScene::BattleScene() {
 		damageAnimationTaskWebApi,
 		MoveType::BackEnd);
 
-	Move* taskMoveWebApi = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+	Move* taskMoveWebApi = new Move(15.0f, 10.0f, "", "", MoveType::Task);
 
 	taskWebApi->AddMove(taskMoveWebApi);
 
@@ -241,7 +241,7 @@ BattleScene::BattleScene() {
 		damageAnimationTaskBacklog,
 		MoveType::ProductOwner);
 
-	Move* taskMoveBacklog = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+	Move* taskMoveBacklog = new Move(15.0f, 10.0f, "", "", MoveType::Task);
 
 	taskSprintBacklog->AddMove(taskMoveBacklog);
 
@@ -271,7 +271,7 @@ BattleScene::BattleScene() {
 		damageAnimationTaskSprintIssues,
 		MoveType::ScrumMaster);
 
-	Move* taskMoveSprintIssues = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+	Move* taskMoveSprintIssues = new Move(15.0f, 10.0f, "", "", MoveType::Task);
 
 	taskSprintIssues->AddMove(taskMoveSprintIssues);
 

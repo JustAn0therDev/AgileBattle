@@ -37,7 +37,7 @@ void BattleSystem::Update() {
 		float modifier = 1;
 
 		if (move->GetMoveType() == target->GetWeakness()) {
-			modifier *= Constants::DAMAGE_MODIFIER; // weakness takes damage * modifier
+			modifier = Constants::DAMAGE_MODIFIER; // weakness takes damage * modifier
 			PlaySound(m_BiggerDamageSound);
 		}
 		else {
