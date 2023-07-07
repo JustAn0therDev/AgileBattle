@@ -215,6 +215,36 @@ BattleScene::BattleScene() {
 
 	taskSprintIssues->AddMove(taskMoveSprintIssues);
 
+	// WebAPI - BackEnd task
+	Texture2D idleTextureTaskWebApi =
+		LoadTexture("Assets\\Images\\Task - WebAPI\\idle.png");
+
+	Texture2D attackTextureTaskWebApi =
+		LoadTexture("Assets\\Images\\Task - WebAPI\\attack.png");
+
+	Texture2D damageTextureTaskWebApi = LoadTexture("Assets\\Images\\Task - WebAPI\\damage.png");
+
+	entityPosTask.y += 100.0f;
+
+	Animation* idleAnimationTaskWebApi = new Animation(entityPosTask, 2, 2, idleTextureTaskWebApi, AnimationType::Idle);
+	Animation* damageAnimationTaskWebApi = new Animation(entityPosTask, 3, 4, damageTextureTaskWebApi, AnimationType::Damage);
+	Animation* attackAnimationTaskWebApi = new Animation(entityPosTask, 5, 8, attackTextureTaskWebApi, AnimationType::Attack);
+
+	Entity* taskSprintWebApi = new Entity(
+		"Tarefa: Desenv. WebAPI",
+		EntityType::Enemy,
+		100.0f,
+		entityPosTask,
+		idleAnimationTaskWebApi,
+		NULL,
+		attackAnimationTaskWebApi,
+		damageAnimationTaskWebApi,
+		MoveType::BackEnd);
+
+	Move* taskMoveWebApi = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+
+	taskSprintWebApi->AddMove(taskMoveWebApi);
+
 	// Finishing the entity list
 
 	m_Entities.emplace_back(dinoFrontEnd);
@@ -223,8 +253,10 @@ BattleScene::BattleScene() {
 	m_Entities.emplace_back(dinoPO);
 	m_Entities.emplace_back(taskInterface);
 	m_Entities.emplace_back(taskSprintIssues);
+	m_Entities.emplace_back(taskSprintWebApi);
 
 	// Setting who are the team members
+	// TODO: EMPLACE BACK WITH RESERVE!!!
 	std::vector<Entity*> teamMembers;
 	teamMembers.push_back(dinoFrontEnd);
 	teamMembers.push_back(dinoSM);
@@ -233,9 +265,11 @@ BattleScene::BattleScene() {
 
 	// And their enemies, since the battle system
 	// must be capable of differentiating between them.
+	// TODO: EMPLACE BACK WITH RESERVE!!!
 	std::vector<Entity*> enemies;
 	enemies.push_back(taskInterface);
 	enemies.push_back(taskSprintIssues);
+	enemies.push_back(taskSprintWebApi);
 
 	m_BattleSystem = new BattleSystem(&m_Ui, enemies, teamMembers);
 }
