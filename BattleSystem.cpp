@@ -126,7 +126,7 @@ void BattleSystem::Update() {
 		}
 	}
 
-	if (GetTime() - m_LastTime > 1 && m_Ui->GetLockContext() == LockContext::EnemyAttack) {
+	if (GetTime() - m_LastTime > 1 && (m_Ui->GetLockContext() == LockContext::EnemyAttack || m_Ui->GetLockContext() == LockContext::PlayerAttack)) {
 		m_Ui->ReleaseLock();
 		m_Ui->ResetUiState();
 	}

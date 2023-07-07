@@ -185,6 +185,66 @@ BattleScene::BattleScene() {
 
 	taskInterface->AddMove(taskMove);
 
+	// WebAPI - BackEnd task
+	Texture2D idleTextureTaskWebApi =
+		LoadTexture("Assets\\Images\\Task - WebAPI\\idle.png");
+
+	Texture2D attackTextureTaskWebApi =
+		LoadTexture("Assets\\Images\\Task - WebAPI\\attack.png");
+
+	Texture2D damageTextureTaskWebApi = LoadTexture("Assets\\Images\\Task - WebAPI\\damage.png");
+
+	entityPosTask.y += 100.0f;
+
+	Animation* idleAnimationTaskWebApi = new Animation(entityPosTask, 2, 2, idleTextureTaskWebApi, AnimationType::Idle);
+	Animation* damageAnimationTaskWebApi = new Animation(entityPosTask, 3, 4, damageTextureTaskWebApi, AnimationType::Damage);
+	Animation* attackAnimationTaskWebApi = new Animation(entityPosTask, 5, 8, attackTextureTaskWebApi, AnimationType::Attack);
+
+	Entity* taskWebApi = new Entity(
+		"Tarefa: Desenv. WebAPI",
+		EntityType::Enemy,
+		100.0f,
+		entityPosTask,
+		idleAnimationTaskWebApi,
+		NULL,
+		attackAnimationTaskWebApi,
+		damageAnimationTaskWebApi,
+		MoveType::BackEnd);
+
+	Move* taskMoveWebApi = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+
+	taskWebApi->AddMove(taskMoveWebApi);
+
+	// PO - Prioritize Backlog
+	Texture2D idleTextureTaskBacklog =
+		LoadTexture("Assets\\Images\\Task - Prioritize Backlog\\idle.png");
+
+	Texture2D attackTextureTaskBacklog =
+		LoadTexture("Assets\\Images\\Task - Prioritize Backlog\\attack.png");
+
+	Texture2D damageTextureTaskBacklog = LoadTexture("Assets\\Images\\Task - Prioritize Backlog\\damage.png");
+
+	entityPosTask.y += 100.0f;
+
+	Animation* idleAnimationTaskBacklog = new Animation(entityPosTask, 2, 2, idleTextureTaskBacklog, AnimationType::Idle);
+	Animation* damageAnimationTaskBacklog = new Animation(entityPosTask, 3, 4, damageTextureTaskBacklog, AnimationType::Damage);
+	Animation* attackAnimationTaskBacklog = new Animation(entityPosTask, 5, 8, attackTextureTaskBacklog, AnimationType::Attack);
+
+	Entity* taskSprintBacklog = new Entity(
+		"Backlog",
+		EntityType::Enemy,
+		100.0f,
+		entityPosTask,
+		idleAnimationTaskBacklog,
+		NULL,
+		attackAnimationTaskBacklog,
+		damageAnimationTaskBacklog,
+		MoveType::ProductOwner);
+
+	Move* taskMoveBacklog = new Move(10.0f, 10.0f, "", "", MoveType::Task);
+
+	taskSprintBacklog->AddMove(taskMoveBacklog);
+
 	// Sprint Issues
 	Texture2D idleTextureTaskSprintIssues =
 		LoadTexture("Assets\\Images\\Task - Sprint Issues\\idle.png");
@@ -215,61 +275,32 @@ BattleScene::BattleScene() {
 
 	taskSprintIssues->AddMove(taskMoveSprintIssues);
 
-	// WebAPI - BackEnd task
-	Texture2D idleTextureTaskWebApi =
-		LoadTexture("Assets\\Images\\Task - WebAPI\\idle.png");
-
-	Texture2D attackTextureTaskWebApi =
-		LoadTexture("Assets\\Images\\Task - WebAPI\\attack.png");
-
-	Texture2D damageTextureTaskWebApi = LoadTexture("Assets\\Images\\Task - WebAPI\\damage.png");
-
-	entityPosTask.y += 100.0f;
-
-	Animation* idleAnimationTaskWebApi = new Animation(entityPosTask, 2, 2, idleTextureTaskWebApi, AnimationType::Idle);
-	Animation* damageAnimationTaskWebApi = new Animation(entityPosTask, 3, 4, damageTextureTaskWebApi, AnimationType::Damage);
-	Animation* attackAnimationTaskWebApi = new Animation(entityPosTask, 5, 8, attackTextureTaskWebApi, AnimationType::Attack);
-
-	Entity* taskSprintWebApi = new Entity(
-		"Tarefa: Desenv. WebAPI",
-		EntityType::Enemy,
-		100.0f,
-		entityPosTask,
-		idleAnimationTaskWebApi,
-		NULL,
-		attackAnimationTaskWebApi,
-		damageAnimationTaskWebApi,
-		MoveType::BackEnd);
-
-	Move* taskMoveWebApi = new Move(10.0f, 10.0f, "", "", MoveType::Task);
-
-	taskSprintWebApi->AddMove(taskMoveWebApi);
-
 	// Finishing the entity list
-
 	m_Entities.emplace_back(dinoFrontEnd);
 	m_Entities.emplace_back(dinoSM);
 	m_Entities.emplace_back(dinoBackEnd);
 	m_Entities.emplace_back(dinoPO);
 	m_Entities.emplace_back(taskInterface);
 	m_Entities.emplace_back(taskSprintIssues);
-	m_Entities.emplace_back(taskSprintWebApi);
+	m_Entities.emplace_back(taskWebApi);
+	m_Entities.emplace_back(taskSprintBacklog);
 
 	// Setting who are the team members
-	// TODO: EMPLACE BACK WITH RESERVE!!!
 	std::vector<Entity*> teamMembers;
-	teamMembers.push_back(dinoFrontEnd);
-	teamMembers.push_back(dinoSM);
-	teamMembers.push_back(dinoBackEnd);
-	teamMembers.push_back(dinoPO);
+	teamMembers.reserve(4);
+	teamMembers.emplace_back(dinoFrontEnd);
+	teamMembers.emplace_back(dinoSM);
+	teamMembers.emplace_back(dinoBackEnd);
+	teamMembers.emplace_back(dinoPO);
 
 	// And their enemies, since the battle system
 	// must be capable of differentiating between them.
-	// TODO: EMPLACE BACK WITH RESERVE!!!
 	std::vector<Entity*> enemies;
-	enemies.push_back(taskInterface);
-	enemies.push_back(taskSprintIssues);
-	enemies.push_back(taskSprintWebApi);
+	enemies.reserve(4);
+	enemies.emplace_back(taskInterface);
+	enemies.emplace_back(taskSprintIssues);
+	enemies.emplace_back(taskWebApi);
+	enemies.emplace_back(taskSprintBacklog);
 
 	m_BattleSystem = new BattleSystem(&m_Ui, enemies, teamMembers);
 }
