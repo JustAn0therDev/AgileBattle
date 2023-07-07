@@ -22,11 +22,11 @@ void Ui::ExecuteDrawDamageAnimation()
 		m_RunningDamageAnimation = false;
 	}
 
-	DrawTextEx(m_Font, 
+	DrawTextEx(m_Font,
 		std::to_string(m_DamageDrawValue).c_str(),
-        m_CurrentDrawDamagePos, 
-		m_DefaultFontSize, 
-		m_DefaultFontSpacing, 
+        m_CurrentDrawDamagePos,
+		m_DefaultFontSize,
+		m_DefaultFontSpacing,
 		color);
 }
 
