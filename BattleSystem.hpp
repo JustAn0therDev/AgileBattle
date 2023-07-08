@@ -18,9 +18,13 @@ private:
 	const Move* m_SelectedMove;
 	Sound m_DamageSound;
 	Sound m_BiggerDamageSound;
+	bool m_PlayerWon;
+	bool m_PlayerLost;
 public:
 	BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Entity*> teamMembers);
 	~BattleSystem();
 
 	void Update();
+	bool GetPlayerWon() const;
+	bool GetPlayerLost() const;
 };

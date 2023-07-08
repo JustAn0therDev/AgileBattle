@@ -6,8 +6,12 @@
 
 BattleScene::BattleScene() {
 	m_BackgroundMusicSound = LoadSound("Assets\\Audio\\Songs\\xDeviruchi - Decisive Battle.wav");
+	m_BattleWon = LoadSound("Assets\\Audio\\Songs\\Gym Leader Victory.wav");
+	m_BattleLost = LoadSound("Assets\\Audio\\Songs\\Determination.wav");
 
 	SetSoundVolume(m_BackgroundMusicSound, Constants::SOUND_VOLUME);
+	SetSoundVolume(m_BattleWon, Constants::SOUND_VOLUME);
+	SetSoundVolume(m_BattleLost, Constants::SOUND_VOLUME);
 
 	// Play the main battle theme song
 	PlaySound(m_BackgroundMusicSound);
@@ -308,7 +312,7 @@ BattleScene::BattleScene() {
 void BattleScene::Update() {
 	// Making sure that the background music is always being played
 	// on repeat.
-	if (!IsSoundPlaying(m_BackgroundMusicSound)) {
+	if (!IsSoundPlaying(m_BackgroundMusicSound) && !m_BattleSystem->GetPlayerLost() && !m_BattleSystem->GetPlayerWon()) {
 		PlaySound(m_BackgroundMusicSound);
 	}
 	
@@ -327,6 +331,17 @@ void BattleScene::Update() {
 	}
 
 	m_BattleSystem->Update();
+
+	if (m_BattleSystem->GetPlayerWon() && IsSoundPlaying(m_BackgroundMusicSound)) {
+		// Play "player won" song
+		StopSound(m_BackgroundMusicSound);
+		PlaySound(m_BattleWon);
+	}
+	else if (m_BattleSystem->GetPlayerLost() && IsSoundPlaying(m_BackgroundMusicSound)) {
+		// Play "player lost" song
+		StopSound(m_BackgroundMusicSound);
+		PlaySound(m_BattleLost);
+	}
 
 #ifdef _DEBUG
 	DrawFPS(0, 0);

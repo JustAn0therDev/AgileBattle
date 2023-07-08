@@ -10,6 +10,8 @@ private:
 	Texture2D m_BackgroundTexture;
 	BattleSystem* m_BattleSystem;
 	Sound m_BackgroundMusicSound;
+	Sound m_BattleWon;
+	Sound m_BattleLost;
 public:
 	BattleScene();
 	void Update();

@@ -10,6 +10,8 @@ BattleSystem::BattleSystem(Ui* ui, std::vector<Entity*> enemies, std::vector<Ent
 	m_TeamMembers = teamMembers;
 	m_Enemies = enemies;
 	m_LastTime = GetTime();
+	m_PlayerLost = false;
+	m_PlayerWon = false;
 
 	m_DamageSound = LoadSound("Assets\\Audio\\Sound Effects\\Damage Sound Effect.wav");
 	m_BiggerDamageSound = LoadSound("Assets\\Audio\\Sound Effects\\Impact Sound Effect.wav");
@@ -56,31 +58,31 @@ void BattleSystem::Update() {
 
 	// checks if player won
 
-	bool playerWins = true;
+	m_PlayerWon = true;
 
 	for (const auto enemy : m_Enemies) {
 		if (enemy->GetHealthPoints() > 0) {
-			playerWins = false;
+			m_PlayerWon = false;
 			break;
 		}
 	}
 
-	if (playerWins) {
+	if (m_PlayerWon) {
 		m_Ui->SetPlayerWon();
 	}
 
 	// checks if player lost
 
-	bool playerLost = true;
+	m_PlayerLost = true;
 
 	for (const auto teamMember : m_TeamMembers) {
 		if (teamMember->GetHealthPoints() > 0) {
-			playerLost = false;
+			m_PlayerLost = false;
 			break;
 		}
 	}
 
-	if (playerLost) {
+	if (m_PlayerLost) {
 		m_Ui->SetPlayerLost();
 	}
 
@@ -130,4 +132,14 @@ void BattleSystem::Update() {
 		m_Ui->ReleaseLock();
 		m_Ui->ResetUiState();
 	}
+}
+
+bool BattleSystem::GetPlayerWon() const
+{
+	return m_PlayerWon;
+}
+
+bool BattleSystem::GetPlayerLost() const
+{
+	return m_PlayerLost;
 }

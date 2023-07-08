@@ -193,7 +193,7 @@ void Ui::Update(Entity* entity) {
 		}
 
 		if (m_ActiveUiState == ActiveUiState::SELECTING_TARGET) {
-			if (isCursorOn && entity->GetEntityType() == EntityType::Enemy && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			if (isCursorOn && entity->GetEntityType() == EntityType::Enemy && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && entity->GetHealthPoints() > 0) {
 				m_SelectedTarget = entity;
 				SetupDrawDamageAnimation();
 				PlaySound(m_BlinkSound);
