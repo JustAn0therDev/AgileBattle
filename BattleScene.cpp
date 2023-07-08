@@ -361,5 +361,9 @@ BattleScene::~BattleScene() {
 
 	// Unloading Background Music
 	UnloadSound(m_BackgroundMusicSound);
+	
+	// Unloading themes
+	UnloadSound(m_BattleWon);
+	UnloadSound(m_BattleLost);
 }
 
