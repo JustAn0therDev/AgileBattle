@@ -82,7 +82,7 @@ void Ui::UpdateContextMenu()
 			Rectangle detailsRec = { 0.0f, 0.0f, detailsTextSize.x, detailsTextSize.y - 25 };
 
 			if (IsCursorOn(moveOptionPos, nameRec)) {
-				DrawTextEx(m_Font, arrowBuffer.append(name).c_str(), moveOptionPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+				DrawTextEx(m_Font, arrowBuffer.append(name).c_str(), moveOptionPos, m_DefaultFontSize, m_DefaultFontSpacing, YELLOW);
 
 				if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
 					m_SelectedMove = move;
@@ -91,7 +91,7 @@ void Ui::UpdateContextMenu()
 				}
 			}
 			else {
-				DrawTextEx(m_Font, name, moveOptionPos, m_DefaultFontSize, m_DefaultFontSpacing, WHITE);
+				DrawTextEx(m_Font, name, moveOptionPos, m_DefaultFontSize, m_DefaultFontSpacing, YELLOW);
 			}
 
 			Vector2 moveDescriptionPos = { moveOptionPos.x + 400, moveOptionPos.y };
@@ -177,7 +177,7 @@ void Ui::Update(Entity* entity) {
 		ExecuteDrawDamageAnimation();
 	}
 
-	if (entity != NULL && m_LockedBy == LockContext::NoLocks) {
+	if (entity != NULL && m_LockedBy == LockContext::NoLocks && !m_PlayerWon && !m_PlayerLost) {
 		Vector2 entityPos = entity->GetPosition();
 		Rectangle rec = entity->GetCurrentAnimation()->GetAnimationRectangle();
 
@@ -208,7 +208,7 @@ void Ui::Update(Entity* entity) {
 						m_ActiveUiState = ActiveUiState::MOVE;
 						PlaySound(m_BlinkSound);
 					}
-					else if (!isCursorOn && entity == m_SelectedEntity && !isCursorOnMenu) {
+					else if (!isCursorOn && entity == m_SelectedEntity && !isCursorOnMenu && m_ActiveUiState != ActiveUiState::MOVE) {
 						m_SelectedEntity = NULL;
 						// The player is not selecting anything, so there is no way to show the character's moves.
 						m_ActiveUiState = ActiveUiState::IDLE;
@@ -241,7 +241,7 @@ void Ui::Draw() {
 		}
 	}
 
-	if (m_HoveringEntity != NULL && m_SelectedEntity != m_HoveringEntity) {
+	if (m_HoveringEntity != NULL && m_SelectedEntity != m_HoveringEntity && m_ActiveUiState != ActiveUiState::MOVE) {
 		DrawEntityInformation(m_HoveringEntity);
 	}
 
