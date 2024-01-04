@@ -6,7 +6,7 @@ Agile Battle: Um jogo para aprender sobre gerenciamento de projetos ágil!
 
 ## Introdução
 
-Este jogo foi feito para alunos de graduação, pós-graduação e entusiastas da área de tecnologia com o objetivo de abordar um tema específico de Gerenciamentos de Projetos, como trabalho para o curso de Engenharia de Software da UTFPR. O jogo foi feito utilizando a biblioteca [raylib](https://github.com/raysan5/raylib).
+Este jogo foi feito para alunos de graduação, pós-graduação e entusiastas da área de tecnologia com o objetivo de abordar um tema específico de Gerenciamentos de Projetos, como trabalho para o curso de pós-graduação em Engenharia de Software da UTFPR. O jogo foi feito utilizando a biblioteca [raylib](https://github.com/raysan5/raylib).
 
 -------
 
